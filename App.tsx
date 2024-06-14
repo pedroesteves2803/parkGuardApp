@@ -9,6 +9,8 @@ const App: React.FC = () => {
     "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
     "Roboto-Flex": require("./assets/fonts/Roboto-Flex.ttf"),
+    "Inter-Regular": require("./assets/fonts/inter/Inter-Regular.ttf"),
+    "Inter-Medium": require("./assets/fonts/inter/Inter-Medium.ttf"),
   });
 
   if (!fontsLoaded || error) {
