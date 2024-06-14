@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { createContext, useState, useContext, ReactNode } from 'react';
 import { authService } from "../services/authService";
-import { Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface AuthData {
@@ -15,7 +14,9 @@ interface AuthContextData {
   authData?: AuthData;
   signIn: (email: string, password: string) => Promise<AuthData | undefined>;
   signOut: () => void;
-  loading: boolean
+  loading: boolean;
+  errorMessage: string;
+  setErrorMessage: (message: string) => void;
 }
 
 export const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -27,6 +28,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authData, setAuth] = useState<AuthData | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     loadFromStorage();
@@ -49,7 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       AsyncStorage.setItem('@AuthData', JSON.stringify(auth));
       return auth;
     } catch (error) {
-      Alert.alert(error.message, 'Tente novamente!');
+      setErrorMessage('Verifique os campos e tente novamente.');
     }
   }
 
@@ -59,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ loading, authData, signIn, signOut }}>
+    <AuthContext.Provider value={{ loading, authData, signIn, signOut, errorMessage, setErrorMessage }}>
       {children}
     </AuthContext.Provider>
   );

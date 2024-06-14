@@ -6,18 +6,31 @@ import InputComponent from '../components/InputComponent';
 import WavesComponent from '../components/WavesComponent';
 import ButtonComponent from '../components/ButtonComponent';
 import { useAuth } from '../contexts/AuthContext';
+import CustomModal from '../components/CustomModal';
 
 interface LoginScreenProps {
   navigation: any;
 }
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
-  const { signIn } = useAuth();
+  const { signIn, errorMessage, setErrorMessage } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [inputEmpty, setInputEmpty] = useState('');
+
+  const handleSignIn = async () => {
+    if (email === '' || password === '') {
+      setInputEmpty('Preencha os campos para continuar.');
+    }    
+
+    await signIn(email, password);
+  };
 
   return (
     <View style={styles.loginContainer}>
+     <CustomModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
+     <CustomModal visible={!!inputEmpty} onClose={() => setInputEmpty('')}  message={inputEmpty} />
+      
       <Image
         style={styles.logoIcon}
         contentFit="cover"
@@ -41,7 +54,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         />            
       </View>
 
-      <ButtonComponent label="LOGIN" onPress={() => signIn(email, password)} />
+      <ButtonComponent label="LOGIN" onPress={handleSignIn} />
       <WavesComponent />
       <StatusBar style="auto" />
     </View>
