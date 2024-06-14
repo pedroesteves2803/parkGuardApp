@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { Image } from 'expo-image';
 import InputComponent from '../components/InputComponent';
@@ -21,13 +21,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const handleSignIn = async () => {
     if (email === '' || password === '') {
       setInputEmpty('Preencha os campos para continuar.');
+      return;
     }    
 
     await signIn(email, password);
   };
 
   return (
-    <View style={styles.loginContainer}>
+    <View style={styles.loginContainer} >
      <CustomModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
      <CustomModal visible={!!inputEmpty} onClose={() => setInputEmpty('')}  message={inputEmpty} />
       
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
     top: 184,
     left: 152,
     textAlign: "center",
-    width: 151,
+    width: 160,
     height: 35,
     position: "absolute",
     color: "#fff",
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    top: Platform.OS === 'ios' ? 0 : 50,
   },
   error: {
     color: 'red',
