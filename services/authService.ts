@@ -1,22 +1,40 @@
-
 import { AuthData } from "../contexts/AuthContext";
 
 async function signIn(email: string, password: string): Promise<AuthData> {
+    try {
+        const response = await fetch('http://localhost/api/employee/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password,
+            }),
+        });
 
-    return new Promise((resolve, reject) => {
+        if (!response.ok) {
+            throw new Error('Credenciais inválidas');
+        }
 
-        setTimeout(() => {
-            if(password === '12345678'){
-                resolve({
-                    token: 'fake-token',
-                    email,
-                    name: 'Pedro'
-                });
-            }else {
-                reject(new Error('Credenciais invalida'));
-            }
-        }, 500);
-    });
+        const responseData = await response.json();
+
+        if (!responseData.data.status) {
+            throw new Error(responseData.data.message || 'Erro ao fazer login');
+        }
+
+        const { token, name, email: userEmail, tipo } = responseData.data.employee;
+
+        return {
+            token: token,
+            email: userEmail,
+            name: name,
+            tipo: tipo,
+        };
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
 }
 
-export const authService = {signIn}
+export const authService = { signIn };

@@ -1,11 +1,7 @@
-import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './screens/LoginScreen';
+import React from 'react';
 import { useFonts } from 'expo-font';
-import ResetPasswordScreen from './screens/ResetPasswordScreen';
-
-const Stack = createStackNavigator();
+import { AuthProvider } from './contexts/AuthContext';
+import { Router } from './routes/Router';
 
 const App: React.FC = () => {
   const [fontsLoaded, error] = useFonts({
@@ -15,18 +11,15 @@ const App: React.FC = () => {
     "Roboto-Flex": require("./assets/fonts/Roboto-Flex.ttf"),
   });
 
-  if (!fontsLoaded && !error) {
+  if (!fontsLoaded || error) {
     return null;
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <Router />
+    </AuthProvider>
   );
-};
+}
 
 export default App;

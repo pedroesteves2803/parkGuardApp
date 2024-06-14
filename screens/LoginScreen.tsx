@@ -105,7 +105,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
+  error: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 10,
+  },
 });
 
 export default LoginScreen;
