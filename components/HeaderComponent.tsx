@@ -2,8 +2,10 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '../contexts/AuthContext';
 
 const HeaderComponent: React.FC<{ name?: string }> = ({ name }) => {
+
   return (
     <LinearGradient
       colors={['#0393AE', '#013D48']}

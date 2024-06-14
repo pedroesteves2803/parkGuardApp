@@ -3,13 +3,24 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import HeaderComponent from '../components/HeaderComponent';
 import NavBarComponent from '../components/Navbar/NavbarComponent';
+import TableComponent from '../components/TableComponent';
+import TableItem from '../components/Table/TableItem';
 
 const HomeScreen: React.FC = () => {
   const { signOut, authData } = useAuth();
 
-  const parkedVehicles = [
-    { plate: 'FGK-4592', date: '10-06-2024', status: 'ESTACIONADO' },
+  const tableData = [
+    [
+      <TableItem plate="EPW-6768" date="10-06-2024" status='ESTACIONADO'/>
+    ],
+    [
+      <TableItem plate="GGT-5395" date="10-06-2024" status='LIBERADO'/>
+    ],
+    [
+      <TableItem plate="CXY-0220" date="10-06-2024" status='PENDENTE'/>
+    ],
   ];
+
 
   return (
     <View style={styles.container}>
@@ -23,9 +34,11 @@ const HomeScreen: React.FC = () => {
               <Text style={styles.subtitleText}>Acompanhe em tempo real os veículos estacionados, liberados e com pendência de pagamento</Text>
           </View>          
 
-          
-        </View>
+          <TableComponent 
+            tableData={tableData}
+          />
 
+        </View>
     </View>
   );
 };
@@ -64,8 +77,43 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'flex-start',
     gap: 16,
-    top: 25
+    marginTop: 16,
+    marginBottom: 16,
   },
+  status: { 
+    display: 'flex',
+    width: 71,
+    height: 22,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexShrink: 0,
+    borderRadius: 4,
+  },  
+  statusText: { 
+    fontFamily: 'Roboto-Medium',
+    fontSize: 8,
+    fontStyle: 'normal',
+    fontWeight: 400,
+    lineHeight: 26,
+    letterSpacing: 0.46,
+    textTransform: 'uppercase',
+    color: "#FFF"
+  },  
+  statusParked: { 
+    backgroundColor: 'rgba(33, 150, 243, 1)',
+  },
+  statusReleased: { 
+    backgroundColor: 'rgba(46, 125, 50, 1)',
+  },
+  statusPending: { 
+    backgroundColor: 'rgba(211, 47, 47, 1)',
+  },
+  item: {
+    padding: 16,
+    color: "#FFF"
+  }
+
 });
 
 
