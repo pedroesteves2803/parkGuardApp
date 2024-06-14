@@ -2,7 +2,7 @@ import { AuthData } from "../contexts/AuthContext";
 
 async function signIn(email: string, password: string): Promise<AuthData> {
     try {
-        const response = await fetch('http://localhost/api/employee/login', {
+        const response = await fetch('http://127.0.0.1:8000/api/employee/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -14,7 +14,7 @@ async function signIn(email: string, password: string): Promise<AuthData> {
         });
 
         if (!response.ok) {
-            throw new Error('Credenciais inválidas');
+            throw new Error('Credenciais inválidas!');
         }
 
         const responseData = await response.json();
