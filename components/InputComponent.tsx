@@ -30,7 +30,7 @@ const InputComponent: React.FC<InputComponentProps> = ({
           onChangeText={onValueChange}
         />
         {isPassword && (
-          <TouchableOpacity style={styles.eyeIconWrapper} onPress={() => setPasswordVisible(!passwordVisible)}>
+          <TouchableOpacity onPress={() => setPasswordVisible(!passwordVisible)}>
             <Image source={passwordVisible ? require("../assets/openEye.png") : require("../assets/closedEye.png")} style={styles.eyeIcon} />
           </TouchableOpacity>
         )}
@@ -72,10 +72,8 @@ const styles = StyleSheet.create({
     color: "rgba(255, 255, 255, 0.6)",
     fontFamily: "Jura-Medium",
   },
-  eyeIconWrapper: {
-    padding: 10,
-  },
   eyeIcon: {
+    marginRight: 10,
     width: 24,
     height: 24,
   },
