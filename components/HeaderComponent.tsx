@@ -1,10 +1,10 @@
 // GradientContent.js
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '../contexts/AuthContext';
 
-const HeaderComponent: React.FC<{ name?: string }> = ({ name }) => {
+const HeaderComponent: React.FC<{ name?: string, onPress: any }> = ({ name, onPress }) => {
 
   return (
     <LinearGradient
@@ -13,7 +13,9 @@ const HeaderComponent: React.FC<{ name?: string }> = ({ name }) => {
     >
       <View style={styles.header}>
         <Image source={require("../assets/logotipo.png")} style={styles.logo} />
-        <Image source={require("../assets/logout.png")} style={styles.exitButton} />
+        <Pressable onPress={onPress}>
+          <Image source={require("../assets/logout.png")} style={styles.exitButton} />
+        </Pressable>
       </View>
       <Text style={styles.greeting}>Olá, {name}!</Text>
       <Text style={styles.info}>Seu estacionamento em ordem! Gerencie e monitore suas vagas com praticidade.</Text>
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontFamily: 'Inter-Medium',
     fontStyle: 'normal',
-    fontWeight: 500,
+    fontWeight: '500',
     lineHeight: 23.34,
     letterSpacing: -1.5,
   },
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.60)',
     fontSize: 14,
     fontStyle: 'normal',
-    fontWeight: 400,
+    fontWeight: '400',
     lineHeight: 20,
     letterSpacing: 0.17,
   },

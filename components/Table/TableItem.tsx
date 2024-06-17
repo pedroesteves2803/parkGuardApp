@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 8,
+    padding: 4,
   },
   itemText: {
     color: "#FFF",
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Medium',
     fontSize: 8,
     fontStyle: 'normal',
-    fontWeight: 400,
+    fontWeight: '400',
     lineHeight: 26,
     letterSpacing: 0.46,
     textTransform: 'uppercase',

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextStyle } from 'react-native';
+import { StyleSheet, View, TextStyle, ScrollView } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 
 interface TableProps {
@@ -8,7 +8,10 @@ interface TableProps {
 
 const TableComponent: React.FC<TableProps> = ({tableData}) => {
   return (
-    <View style={styles.container}>
+    <ScrollView 
+      contentContainerStyle={styles.scrollView}
+      showsVerticalScrollIndicator={false}
+    >
       <Table style={styles.table}>
         {
           tableData.map((rowData, index) => (
@@ -16,13 +19,14 @@ const TableComponent: React.FC<TableProps> = ({tableData}) => {
           ))
         }
       </Table>
-    </View>
+    </ScrollView>
   )
 }
 
 const styles = StyleSheet.create({
-    container: { 
-        flex: 1, 
+    scrollView: {
+      flexGrow: 1,
+      height: 900
     },
     table: {
         display: 'flex',
@@ -37,7 +41,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Medium',
         fontSize: 14,
         fontStyle: 'normal',
-        fontWeight: 400,
+        fontWeight: '400',
         lineHeight: 20.02,
         letterSpacing: 0.17,
     } as TextStyle,
@@ -61,11 +65,7 @@ const styles = StyleSheet.create({
     row: {
         borderBottomWidth: 1,
         borderBottomColor: 'rgba(80, 80, 80, 1)',
-        // display: 'flex',
-        // height: 45,
         width: "100%",
-        // alignItems: 'center',
-        // alignSelf: 'stretch',
     },
 });
 

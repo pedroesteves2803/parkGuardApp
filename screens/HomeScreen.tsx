@@ -1,44 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import HeaderComponent from '../components/HeaderComponent';
-import NavBarComponent from '../components/Navbar/NavbarComponent';
-import TableComponent from '../components/TableComponent';
 import TableItem from '../components/Table/TableItem';
+import TableComponent from '../components/Table/TableComponent';
+import useFetchVehicles from '../hooks/useFetchVehicles';
+import { LoadingComponent, ErrorComponent } from '../components/LoadingErrorComponents';
+import NavBarComponent from '../components/Navbar/NavbarComponent';
+import VehicleStatusSegmentedControl from '../components/VehicleStatusSegmentedControl';
 
 const HomeScreen: React.FC = () => {
   const { signOut, authData } = useAuth();
+  const { vehicles, loading, error } = useFetchVehicles(authData?.token || '');
+  const [currentSegment, setCurrentSegment] = useState<'Atuais' | 'Histórico'>('Atuais');
 
-  const tableData = [
-    [
-      <TableItem plate="EPW-6768" date="10-06-2024" status='ESTACIONADO'/>
-    ],
-    [
-      <TableItem plate="GGT-5395" date="10-06-2024" status='LIBERADO'/>
-    ],
-    [
-      <TableItem plate="CXY-0220" date="10-06-2024" status='PENDENTE'/>
-    ],
-  ];
+  if (loading) {
+    return <LoadingComponent />;
+  }
 
+  if (error) {
+    return <ErrorComponent message={error} />;
+  }
+
+  const handleSegmentChange = (segment: 'Atuais' | 'Histórico') => {
+    setCurrentSegment(segment);
+  };
+
+  const filteredVehicles = currentSegment === 'Atuais'
+    ? vehicles.filter(vehicle => vehicle.departureTimes === null)
+    : vehicles;
+
+  const tableData = filteredVehicles.map(vehicle => ([
+    <TableItem
+      key={vehicle.id}
+      plate={vehicle.licensePlate}
+      date={vehicle.entryTimes}
+      status={vehicle.departureTimes == null ? "ESTACIONADO" : "LIBERADO"}
+    />
+  ]));
 
   return (
     <View style={styles.container}>
-        <HeaderComponent name={ authData?.name } />
+      <HeaderComponent name={authData?.name} onPress={signOut} />
 
-        <View style={styles.body}>
-          <NavBarComponent/>
+      <View style={styles.body}>
+        <NavBarComponent />
 
-          <View style={styles.titleContainer}>
-              <Text style={styles.titleText}>Status de veículos estacionados</Text>
-              <Text style={styles.subtitleText}>Acompanhe em tempo real os veículos estacionados, liberados e com pendência de pagamento</Text>
-          </View>          
-
-          <TableComponent 
-            tableData={tableData}
-          />
-
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>Status de veículos estacionados</Text>
+          <Text style={styles.subtitleText}>Acompanhe em tempo real os veículos estacionados, liberados e com pendência de pagamento</Text>
         </View>
+
+        <VehicleStatusSegmentedControl initialSegment={currentSegment} onSegmentChange={handleSegmentChange} />
+
+        <TableComponent tableData={tableData} />
+      </View>
     </View>
   );
 };
@@ -63,7 +79,7 @@ const styles = StyleSheet.create({
     lineHeight: 23.34,
   },
   subtitleText: {
-    fontWeight: 400,
+    fontWeight: '400',
     color: '#C6C6C6',
     fontFamily: 'Inter-Medium',
     fontSize: 12,
@@ -79,43 +95,7 @@ const styles = StyleSheet.create({
     gap: 16,
     marginTop: 16,
     marginBottom: 16,
-  },
-  status: { 
-    display: 'flex',
-    width: 71,
-    height: 22,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexShrink: 0,
-    borderRadius: 4,
-  },  
-  statusText: { 
-    fontFamily: 'Roboto-Medium',
-    fontSize: 8,
-    fontStyle: 'normal',
-    fontWeight: 400,
-    lineHeight: 26,
-    letterSpacing: 0.46,
-    textTransform: 'uppercase',
-    color: "#FFF"
-  },  
-  statusParked: { 
-    backgroundColor: 'rgba(33, 150, 243, 1)',
-  },
-  statusReleased: { 
-    backgroundColor: 'rgba(46, 125, 50, 1)',
-  },
-  statusPending: { 
-    backgroundColor: 'rgba(211, 47, 47, 1)',
-  },
-  item: {
-    padding: 16,
-    color: "#FFF"
   }
-
 });
-
-
 
 export default HomeScreen;

@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Medium',
     fontSize: 12,
     fontStyle: 'normal',
-    fontWeight: 500,
+    fontWeight: '500',
     lineHeight: 17.16,
     color: '#C6C6C6', 
     marginTop: 10,

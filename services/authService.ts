@@ -2,7 +2,7 @@ import { AuthData } from "../contexts/AuthContext";
 
 async function signIn(email: string, password: string): Promise<AuthData> {
     try {
-        const response = await fetch('http://127.0.0.1:8000/api/employee/login', {
+        const response = await fetch('http://192.168.1.124/api/employee/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
