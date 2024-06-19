@@ -6,7 +6,7 @@ type Props = {
   onSegmentChange: (segment: 'Atuais' | 'Histórico') => void;
 };
 
-const VehicleStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegmentChange }) => {
+const ListVehicleStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegmentChange }) => {
   const [selectedSegment, setSelectedSegment] = React.useState(initialSegment);
 
   const handleSegmentPress = (segment: 'Atuais' | 'Histórico') => {
@@ -31,7 +31,7 @@ const VehicleStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegm
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.filters} onPress={() => handleSegmentPress('Atuais')}>
-        <Image source={require('../assets/filter.png')} style={styles.filterImage} />
+        <Image source={require('../../assets/filter.png')} style={styles.filterImage} />
       </TouchableOpacity>
     </View>
   );
@@ -72,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VehicleStatusSegmentedControl;
+export default ListVehicleStatusSegmentedControl;

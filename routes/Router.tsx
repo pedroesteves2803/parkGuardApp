@@ -1,15 +1,15 @@
 import { NavigationContainer } from "@react-navigation/native";
-import HomeStack from "../stacks/HomeStack";
 import AuthStack from "../stacks/AuthStack";
-import { useContext } from "react";
-import { AuthContext, useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext";
+import React from "react";
+import AppStack from "../stacks/AppStack";
 
 export function Router() {
-    const { authData, loading } = useAuth();
+    const { authData } = useAuth();
 
     return (
       <NavigationContainer>
-        {authData ? <HomeStack /> : <AuthStack />}
+        {authData ? <AppStack /> : <AuthStack />}
       </NavigationContainer>
     );
 }

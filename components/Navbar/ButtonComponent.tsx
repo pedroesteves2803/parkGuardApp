@@ -2,13 +2,14 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 
 interface ButtonComponentProps {
-    image: any;
-    label: string;
-  }
+  image: any;
+  label: string;
+  onPress?: () => void;
+}
 
-const ButtonComponent: React.FC<ButtonComponentProps> = ({image, label}) => {
+const ButtonComponent: React.FC<ButtonComponentProps> = ({image, label, onPress}) => {
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={onPress}>
       <Image
         source={image}
         style={styles.image}

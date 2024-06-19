@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
-import HeaderComponent from '../components/HeaderComponent';
+import HeaderComponent from '../components/Header/HeaderComponent';
 import TableItem from '../components/Table/TableItem';
 import TableComponent from '../components/Table/TableComponent';
 import useFetchVehicles from '../hooks/useFetchVehicles';
 import { LoadingComponent, ErrorComponent } from '../components/LoadingErrorComponents';
 import NavBarComponent from '../components/Navbar/NavbarComponent';
-import VehicleStatusSegmentedControl from '../components/VehicleStatusSegmentedControl';
+import { AppStackParamList } from '../stacks/AppStack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+import ListVehicleStatusSegmentedControl from '../components/Control/ListVehicleStatusSegmentedControl';
 
 const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<AppStackParamList>>();
   const { signOut, authData } = useAuth();
   const { vehicles, loading, error } = useFetchVehicles(authData?.token || '');
   const [currentSegment, setCurrentSegment] = useState<'Atuais' | 'Histórico'>('Atuais');
@@ -44,14 +48,14 @@ const HomeScreen: React.FC = () => {
       <HeaderComponent name={authData?.name} onPress={signOut} />
 
       <View style={styles.body}>
-        <NavBarComponent />
+        <NavBarComponent navigation={navigation}/>
 
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>Status de veículos estacionados</Text>
           <Text style={styles.subtitleText}>Acompanhe em tempo real os veículos estacionados, liberados e com pendência de pagamento</Text>
         </View>
 
-        <VehicleStatusSegmentedControl initialSegment={currentSegment} onSegmentChange={handleSegmentChange} />
+        <ListVehicleStatusSegmentedControl initialSegment={currentSegment} onSegmentChange={handleSegmentChange} />
 
         <TableComponent tableData={tableData} />
       </View>

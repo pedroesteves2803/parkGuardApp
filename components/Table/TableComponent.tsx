@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TextStyle, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 import { Table, Row } from 'react-native-table-component';
 
 interface TableProps {
@@ -18,7 +18,7 @@ const TableComponent: React.FC<TableProps> = ({ tableData }) => {
             key={index}
             data={rowData}
             style={styles.row}
-            textStyle={styles.text} // Certifique-se que textStyle é um objeto
+            textStyle={styles.text}
           />
         ))}
       </Table>
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 20.02,
     letterSpacing: 0.17,
-  } as TextStyle,
+  } ,
 });
 
 export default TableComponent;
