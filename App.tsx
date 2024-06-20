@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFonts } from 'expo-font';
-import { AuthProvider } from './contexts/AuthContext';
-import { Router } from './routes/Router';
+import { AppNavigator } from './src/navigation/AppNavigator';
+import { AuthProvider } from './src/contexts/AuthContext';
 
 const App: React.FC = () => {
   const [fontsLoaded, error] = useFonts({
@@ -19,7 +19,7 @@ const App: React.FC = () => {
 
   return (
     <AuthProvider>
-      <Router />
+      <AppNavigator />
     </AuthProvider>
   );
 }
