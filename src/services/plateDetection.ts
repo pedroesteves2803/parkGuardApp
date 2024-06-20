@@ -11,7 +11,7 @@ export async function detectPlace(token: string, imageUri: string): Promise<stri
         formData.append('image', {
             uri: imageUri,
             type: type,
-            name: 'image.jpg', 
+            name: `image.${type}`, 
         } as any);
 
         const response = await fetch(`${plateDetectionUrl}/detect`, {
@@ -23,19 +23,20 @@ export async function detectPlace(token: string, imageUri: string): Promise<stri
             body: formData,
         });
 
-        if (!response.ok) {
+        if (!response.ok) { 
             throw new Error(`Erro na requisição (detectPlace): ${response.status} ${response.statusText}`);
         }
 
         const responseData = await response.json();
+        console.log(responseData);
 
         if(responseData.error){
+
             throw new Error(responseData.message);
         }
 
-        return responseData.placa;
+        return responseData.plate;
     } catch (error) {
-        console.error('Erro ao detectar placa:', error.message);
         throw new Error(error.message);
     }
 }

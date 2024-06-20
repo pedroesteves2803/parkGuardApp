@@ -53,7 +53,7 @@ const RegisterVehicleScreen: React.FC = () => {
     };
 
     const captureImage = async () => {
-      let result = await ImagePicker.launchCameraAsync({
+      let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
