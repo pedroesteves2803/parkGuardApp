@@ -7,7 +7,7 @@ interface StatusItemProps {
   status: 'ESTACIONADO' | 'LIBERADO' | 'PENDENTE';
 }
 
-const TableItem: React.FC<StatusItemProps> = ({ plate, date, status }) => {
+const ItemComponent: React.FC<StatusItemProps> = ({ plate, date, status }) => {
   const statusStyles = {
     ESTACIONADO: styles.statusParked,
     LIBERADO: styles.statusReleased,
@@ -69,4 +69,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TableItem;
+export default ItemComponent;

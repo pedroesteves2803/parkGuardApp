@@ -6,12 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { AppStackParamList } from '../navigation/MainStack';
 import { useAuth } from '../contexts/AuthContext';
 import { ErrorComponent, LoadingComponent } from '../components/Shared/Loading/LoadingErrorComponents';
-import TableComponent from '../components/Shared/Table/TableComponent';
-import TableItem from '../components/Shared/Table/TableItem';
 import HomeHeaderComponent from '../components/Home/Headers/HomeHeaderComponent';
 import HomeNavbarComponent from '../components/Home/Navbars/HomeNavbarComponent';
 import VehicleStatusSegmentedControl from '../components/Home/Controls/VehicleStatusSegmentedControl';
-import AlertErrorModal from '../components/Shared/Modals/AlertErrorModal';
+import VehicleListComponent from '../components/Shared/Table/VehicleListComponent';
+
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<AppStackParamList>>();
   const { signOut, authData } = useAuth();
@@ -43,21 +42,12 @@ const HomeScreen: React.FC = () => {
     ? vehicles.filter(vehicle => vehicle.departureTimes === null)
     : vehicles;
 
-  const tableData = filteredVehicles.map(vehicle => ([
-    <TableItem
-      key={vehicle.id}
-      plate={vehicle.licensePlate}
-      date={vehicle.entryTimes}
-      status={vehicle.departureTimes == null ? "ESTACIONADO" : "LIBERADO"}
-    />
-  ]));
-
   return (
     <View style={styles.container}>
       <HomeHeaderComponent name={authData?.name} onPress={signOut} />
 
       <View style={styles.body}>
-        <HomeNavbarComponent navigation={navigation}/>
+        <HomeNavbarComponent navigation={navigation} />
 
         <View style={styles.titleContainer}>
           <Text style={styles.titleText}>Status de veículos estacionados</Text>
@@ -66,8 +56,8 @@ const HomeScreen: React.FC = () => {
 
         <VehicleStatusSegmentedControl initialSegment={currentSegment} onSegmentChange={handleSegmentChange} />
 
-        {!error  && (
-          <TableComponent tableData={tableData} />
+        {!error && (
+          <VehicleListComponent vehicles={filteredVehicles} />
         )}
       </View>
     </View>

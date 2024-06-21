@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 type Props = {
@@ -9,9 +9,15 @@ type Props = {
 const VehicleStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegmentChange }) => {
   const [selectedSegment, setSelectedSegment] = React.useState(initialSegment);
 
+  useEffect(() => {
+    setSelectedSegment(initialSegment);
+  }, [initialSegment]);
+
   const handleSegmentPress = (segment: 'Atuais' | 'Histórico') => {
-    setSelectedSegment(segment);
-    onSegmentChange(segment);
+    if (segment !== selectedSegment) {
+      setSelectedSegment(segment);
+      onSegmentChange(segment);
+    }
   };
 
   return (
