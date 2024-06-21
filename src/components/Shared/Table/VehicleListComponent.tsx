@@ -38,7 +38,7 @@ const VehicleListComponent: React.FC<VehicleListProps> = ({ vehicles }) => {
 
 const styles = StyleSheet.create({
   flatListContentContainer: {
-    paddingBottom: 500,
+    paddingBottom: 550,
   } as ViewStyle,
 });
 
