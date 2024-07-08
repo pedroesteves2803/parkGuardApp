@@ -35,6 +35,7 @@ const RegisterVehicleScreen: React.FC = () => {
             setLoading(false)
         } catch (error) {
           setError(error.message);
+          setLoading(false)
         }
     };
 
@@ -52,8 +53,10 @@ const RegisterVehicleScreen: React.FC = () => {
 
     const detectPlaceService = async (imageUri: string) => {
         try {
+            setLoading(true)
             const detectedPlace = await detectPlace(authData?.token || '', imageUri);
             setPlace(detectedPlace);
+            setLoading(false)
         } catch (error) {
           setError(error.message);
           setLoading(false)
