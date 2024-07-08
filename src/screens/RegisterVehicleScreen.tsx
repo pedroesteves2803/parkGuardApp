@@ -11,6 +11,7 @@ import { createVehicle } from '../services/vehicleService';
 import { detectPlace } from '../services/plateDetection';
 import AlertErrorModal from '../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../components/Shared/Modals/AlertSuccessModal';
+import { LoadingComponent } from '../components/Shared/Loading/LoadingErrorComponents';
 
 
 const RegisterVehicleScreen: React.FC = () => {
@@ -18,6 +19,7 @@ const RegisterVehicleScreen: React.FC = () => {
     const navigation = useNavigation<StackNavigationProp<AppStackParamList>>();
     const [currentSegment, setCurrentSegment] = useState<'Carregar imagem' | 'Digitar placa'>('Carregar imagem');
     const [place, setPlace] = useState('');
+    const [loading, setLoading] = useState<boolean>(false);
     const [image, setImage] = useState<string | null>(null);
     const [cameraStatus, cameraRequestPermission] = ImagePicker.useCameraPermissions();
     const [mediaStatus, mediaRequestPermission] = ImagePicker.useMediaLibraryPermissions();
@@ -26,9 +28,11 @@ const RegisterVehicleScreen: React.FC = () => {
 
     const saveVehicleInput = async () => {
         try {
+            setLoading(true)
             setImage(null);
             const response = await createVehicle(authData?.token || '', place);
             setSuccess(`Veículo ${response.licensePlate} adicionado!`);
+            setLoading(false)
         } catch (error) {
           setError(error.message);
         }
@@ -36,8 +40,10 @@ const RegisterVehicleScreen: React.FC = () => {
 
     const saveVehicleImage = async () => {
         try {
+            setLoading(true)
             const response = await createVehicle(authData?.token || '', place);
             setSuccess(`Veículo ${response.licensePlate} adicionado!`);
+            setLoading(false)
         } catch (error) {
           setError(error.message);
         }
@@ -119,9 +125,15 @@ const RegisterVehicleScreen: React.FC = () => {
                   </TouchableOpacity>
                 )}
 
-                <TouchableOpacity style={styles.button} onPress={saveVehicleImage}>
-                  <Text style={styles.buttonLabel}>SALVAR</Text>
-                </TouchableOpacity>
+                {!loading && (
+                  <TouchableOpacity style={styles.button} onPress={saveVehicleImage}>
+                    <Text style={styles.buttonLabel}>SALVAR</Text>
+                  </TouchableOpacity>
+                )}
+
+                {loading && (
+                  <LoadingComponent />
+                )}
               </View>
              
               )}
@@ -140,9 +152,15 @@ const RegisterVehicleScreen: React.FC = () => {
                     </View>
                   </View>
 
-                  <TouchableOpacity style={styles.button} onPress={saveVehicleInput}>
-                    <Text style={styles.buttonLabel}>SALVAR</Text>
-                  </TouchableOpacity>
+                  {!loading && (
+                    <TouchableOpacity style={styles.button} onPress={saveVehicleInput}>
+                      <Text style={styles.buttonLabel}>SALVAR</Text>
+                    </TouchableOpacity>
+                  )}
+
+                  {loading && (
+                    <LoadingComponent />
+                  )}
                 </View>
               )}
             </View>
