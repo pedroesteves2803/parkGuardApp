@@ -17,12 +17,22 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inputEmpty, setInputEmpty] = useState('');
+  
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+  };
 
   const handleSignIn = async () => {
     if (email === '' || password === '') {
       setInputEmpty('Preencha os campos para continuar.');
       return;
     }    
+
+    if (!validateEmail(email)) {
+        setInputEmpty('Por favor, insira um email válido.');
+        return;
+    }
 
     await signIn(email, password);
   };

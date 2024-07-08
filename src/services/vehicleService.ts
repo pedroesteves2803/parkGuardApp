@@ -50,7 +50,6 @@ export async function createVehicle(token: string, licensePlate: string): Promis
         });
 
         if (!response.ok) {
-            console.log(licensePlate)
             throw new Error(`Erro na requisição (createVehicle): ${response.status} ${response.statusText}`);
         }
 

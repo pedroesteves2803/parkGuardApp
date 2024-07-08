@@ -9,11 +9,19 @@ export interface AuthData {
   name: string;
   tipo: number;
 }
+export interface tokenReset {
+  token: string;
+  email: string;
+  expirationTime: string;
+}
 
 interface AuthContextData {
   authData?: AuthData;
   signIn: (email: string, password: string) => Promise<AuthData | undefined>;
-  signOut: () => void;
+  signOut: () => Promise<void>;
+  resetPassword: (mail: string) => Promise<boolean>;
+  verifyTokenResetPassword: (code: string) => Promise<tokenReset | boolean>;
+  resetPasswordUpdate: (password: string) => Promise<boolean>;
   loading: boolean;
   errorMessage: string;
   setErrorMessage: (message: string) => void;
@@ -51,17 +59,59 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       AsyncStorage.setItem('@AuthData', JSON.stringify(auth));
       return auth;
     } catch (error) {
-      setErrorMessage('Verifique os campos e tente novamente.');
+      setErrorMessage('Verifique os campos e tente novamente!');
     }
   }
 
-  function signOut(): void {
-    setAuth(undefined);
-    AsyncStorage.removeItem('@AuthData');
+  async function signOut(): Promise<void> {
+    try {
+      await authService.signOut(authData?.token || '');
+      setAuth(undefined);
+      AsyncStorage.removeItem('@AuthData');
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  }
+
+  async function resetPassword(email: string) {
+    try {
+      await authService.resetPassword(email);
+      return true;
+    } catch (error) {
+      setErrorMessage(error.message);
+      return false;
+    }
+  }
+
+  async function verifyTokenResetPassword(code: string) {
+    try {
+      const response = await authService.verifyTokenResetPassword(code);
+      AsyncStorage.setItem('codeReset', code);
+      return response;
+    } catch (error) {
+      setErrorMessage(error.message);
+      return false;
+    }
+  }
+
+  async function resetPasswordUpdate(password: string)  {
+    try {
+      let storedCode = await AsyncStorage.getItem('codeReset');
+
+      if (storedCode === null) {
+        throw new Error('Código de redefinição não encontrado');
+      }
+
+      const response = await authService.resetPasswordUpdate(storedCode, password);
+      return response;
+    } catch (error) {
+      setErrorMessage(error.message);
+      return false;
+    }
   }
 
   return (
-    <AuthContext.Provider value={{ loading, authData, signIn, signOut, errorMessage, setErrorMessage }}>
+    <AuthContext.Provider value={{ loading, authData, signIn, signOut, resetPassword, verifyTokenResetPassword, resetPasswordUpdate,  errorMessage, setErrorMessage }}>
       {children}
     </AuthContext.Provider>
   );

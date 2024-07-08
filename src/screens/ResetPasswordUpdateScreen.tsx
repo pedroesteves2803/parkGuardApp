@@ -1,53 +1,53 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
-import ButtonComponent from '../components/ResetPassword/Forms/ButtonComponent';
+import ButtonComponent from '../components/ResetPasswordUpdate/Forms/ButtonComponent';
 import LoginInputComponent from '../components/Login/Forms/LoginInputComponent';
 import { useAuth } from '../contexts/AuthContext';
 import AlertErrorModal from '../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../components/Shared/Modals/AlertSuccessModal';
-import { useNavigation } from '@react-navigation/native';
 
-interface ResetPasswordScreenProps {
+interface ResetPasswordUpdateScreenProps {
   navigation: any;
 }
 
-const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({ navigation }) => {
-  const { resetPassword, errorMessage, setErrorMessage } = useAuth();
-  const [email, setEmail] = useState('');
+const ResetPasswordUpdateScreen: React.FC<ResetPasswordUpdateScreenProps> = ({ navigation }) => {
+  const { resetPasswordUpdate, errorMessage, setErrorMessage } = useAuth();
+  const [password, setPassword] = useState('');
+  const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [inputEmpty, setInputEmpty] = useState('');
   const [success, setSuccess] = useState(false);
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-  };
 
-  const handleResetPassword = async () => {
-    if (email === '') {
+  const handleUpdatePassword = async () => {
+    if (password === '' || passwordConfirmation === '') {
       setInputEmpty('Preencha o campo para continuar.');
       return;
     }
 
-    if (!validateEmail(email)) {
-        setInputEmpty('Por favor, insira um email válido.');
-        return;
+    if (password !== passwordConfirmation) {
+      setInputEmpty('Senhas não identicas!');
+      return;
     }
 
-    const response = await resetPassword(email);
+    const response = await resetPasswordUpdate(password);
 
-    if (response !== false) {
+    if(response === true) {
       setSuccess(true);
-      navigation.navigate('VerifyTokenPassword');
+      navigation.navigate('Login');
+    }
+
+    if(response === false) {
+      navigation.navigate('Login');
     }
   };
 
   return (
-    <View style={styles.resetPasswordContainer}>
-
-    <AlertErrorModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
-    <AlertErrorModal visible={!!inputEmpty} onClose={() => setInputEmpty('')}  message={inputEmpty} />
-    <AlertSuccessModal visible={success} onClose={() => setSuccess(false)}  message='Token enviado!' />
-
+    
+    <View style={styles.resetPasswordUpdateContainer}>
+      <AlertErrorModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
+      <AlertErrorModal visible={!!inputEmpty} onClose={() => setInputEmpty('')}  message={inputEmpty} />
+      <AlertSuccessModal visible={success} onClose={() => setSuccess(false)}  message='Senha alterada!' />
+        
       <Image
         style={styles.logoIcon}
         contentFit="cover"
@@ -56,16 +56,26 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({ navigation })
       <Text style={styles.parkguardText}>ParkGuard</Text>
 
       <View style={styles.textContainer}>
-        <Text style={styles.textHeading}>Recuperar senha</Text>
-        <Text style={[styles.textHeading, styles.text]}>Esqueceu sua senha? Não se preocupe, digite seu e-mail para redefinir sua senha atual.</Text>
+        <Text style={styles.textHeading}>Alterar a senha</Text>
+        <Text style={[styles.textHeading, styles.text]}>Crie uma senha nova e forte que você nunca usou antes</Text>
       </View>
 
       <View style={styles.inputContainer}>
-        <LoginInputComponent label="E-mail" placeholder="email@gmail.com" onValueChange={setEmail} />
+        <LoginInputComponent 
+          label="Criar senha" 
+          placeholder="Insira a nova senha" 
+          isPassword={true} 
+          onValueChange={setPassword} 
+        />            
+        <LoginInputComponent 
+          label="Confirmar senha" 
+          placeholder="Confirme sua senha" 
+          isPassword={true} 
+          onValueChange={setPasswordConfirmation} 
+        />            
       </View>
 
-      <ButtonComponent label="ENVIAR" onPress={handleResetPassword} />
-
+      <ButtonComponent label="ALTERAR" onPress={handleUpdatePassword} />
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.backButtonLabel}>Voltar</Text>
       </TouchableOpacity>
@@ -74,7 +84,7 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({ navigation })
 };
 
 const styles = StyleSheet.create({
-  resetPasswordContainer: {
+resetPasswordUpdateContainer: {
     backgroundColor: "#1E1E1E",
     width: "100%",
     height: "100%",
@@ -132,7 +142,7 @@ const styles = StyleSheet.create({
     top: Platform.OS === 'ios' ? 390 : 390,
   },
   backButton: {
-    top: 480,
+    top: 460,
     alignItems: 'center',
   },
   backButtonLabel: {
@@ -145,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ResetPasswordScreen;
+export default ResetPasswordUpdateScreen;

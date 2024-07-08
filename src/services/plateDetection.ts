@@ -28,7 +28,6 @@ export async function detectPlace(token: string, imageUri: string): Promise<stri
         }
 
         const responseData = await response.json();
-        console.log(responseData);
 
         if(responseData.error){
 

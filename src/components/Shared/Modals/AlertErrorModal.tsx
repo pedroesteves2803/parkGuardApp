@@ -26,7 +26,7 @@ const AlertErrorModal: React.FC<ModalProps> = ({ visible, onClose, title, messag
         <View style={styles.modalView}>
           <Image source={require("../../../../assets/alert.png")} style={styles.alertIcon} /> 
           {title ? (
-            <View>
+            <View style={styles.textContainer}>
               <Text style={styles.title}>{title}</Text>
               <Text style={styles.modalText}>{message}</Text>
             </View>
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   modalView: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: '80%', 
+    width: '95%', 
     padding: 20,
     backgroundColor: "#D32F2F",
     borderRadius: 10, 
@@ -77,11 +77,11 @@ const styles = StyleSheet.create({
     height: 40,
   },
   title: {
-    fontSize: 18, 
+    fontSize: 15, 
     color: "#fff", 
     marginLeft: 5, 
     fontWeight: "bold",
-    width: "75%"
+    width: "90%"
   },
   closeButton: {
     top: -20,
@@ -97,9 +97,12 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginLeft: 5, 
-    fontSize: 12, 
+    fontSize: 15, 
     color: "#fff", 
     width: "75%"
+  },
+  textContainer: {
+    width: "90%"
   }
 });
 

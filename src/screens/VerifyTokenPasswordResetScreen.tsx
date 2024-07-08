@@ -6,48 +6,38 @@ import LoginInputComponent from '../components/Login/Forms/LoginInputComponent';
 import { useAuth } from '../contexts/AuthContext';
 import AlertErrorModal from '../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../components/Shared/Modals/AlertSuccessModal';
-import { useNavigation } from '@react-navigation/native';
 
-interface ResetPasswordScreenProps {
+interface VerifyTokenPasswordResetScreenProps {
   navigation: any;
 }
 
-const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({ navigation }) => {
-  const { resetPassword, errorMessage, setErrorMessage } = useAuth();
-  const [email, setEmail] = useState('');
+const VerifyTokenPasswordResetScreen: React.FC<VerifyTokenPasswordResetScreenProps> = ({ navigation }) => {
+  const { verifyTokenResetPassword, errorMessage, setErrorMessage } = useAuth();
+  const [code, setCode] = useState('');
   const [inputEmpty, setInputEmpty] = useState('');
   const [success, setSuccess] = useState(false);
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-  };
 
-  const handleResetPassword = async () => {
-    if (email === '') {
+  const handleVerifyTokenResetPassword = async () => {
+    if (code === '') {
       setInputEmpty('Preencha o campo para continuar.');
       return;
     }
 
-    if (!validateEmail(email)) {
-        setInputEmpty('Por favor, insira um email válido.');
-        return;
-    }
+    const response = await verifyTokenResetPassword(code);
 
-    const response = await resetPassword(email);
-
-    if (response !== false) {
+    if(response !== false) {
       setSuccess(true);
-      navigation.navigate('VerifyTokenPassword');
+      navigation.navigate('ResetPasswordUpdate');
     }
   };
 
   return (
-    <View style={styles.resetPasswordContainer}>
-
-    <AlertErrorModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
-    <AlertErrorModal visible={!!inputEmpty} onClose={() => setInputEmpty('')}  message={inputEmpty} />
-    <AlertSuccessModal visible={success} onClose={() => setSuccess(false)}  message='Token enviado!' />
-
+    
+    <View style={styles.verifyTokenResetPasswordContainer}>
+      <AlertErrorModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
+      <AlertErrorModal visible={!!inputEmpty} onClose={() => setInputEmpty('')}  message={inputEmpty} />
+      <AlertSuccessModal visible={success} onClose={() => setSuccess(false)}  message='Token validado!' />
+        
       <Image
         style={styles.logoIcon}
         contentFit="cover"
@@ -56,25 +46,25 @@ const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({ navigation })
       <Text style={styles.parkguardText}>ParkGuard</Text>
 
       <View style={styles.textContainer}>
-        <Text style={styles.textHeading}>Recuperar senha</Text>
-        <Text style={[styles.textHeading, styles.text]}>Esqueceu sua senha? Não se preocupe, digite seu e-mail para redefinir sua senha atual.</Text>
+      <Text style={styles.textHeading}>Código de verificação</Text>
+      <Text style={[styles.textHeading, styles.text]}>Um código de autenticação foi enviado para seu e-mail</Text>
       </View>
 
       <View style={styles.inputContainer}>
-        <LoginInputComponent label="E-mail" placeholder="email@gmail.com" onValueChange={setEmail} />
+        <LoginInputComponent label="Código" placeholder="ABCDE" onValueChange={setCode} />
       </View>
 
-      <ButtonComponent label="ENVIAR" onPress={handleResetPassword} />
+      <ButtonComponent label="VERIFICAR" onPress={handleVerifyTokenResetPassword} />
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.backButtonLabel}>Voltar</Text>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('ResetPassword')}>
+        <Text style={styles.backButtonLabel}>Não recebeu um código? Reenviar</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  resetPasswordContainer: {
+  verifyTokenResetPasswordContainer: {
     backgroundColor: "#1E1E1E",
     width: "100%",
     height: "100%",
@@ -145,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ResetPasswordScreen;
+export default VerifyTokenPasswordResetScreen;
