@@ -46,6 +46,7 @@ const RegisterVehicleScreen: React.FC = () => {
             setLoading(false)
         } catch (error) {
           setError(error.message);
+          setLoading(false)
         }
     };
 
@@ -55,6 +56,7 @@ const RegisterVehicleScreen: React.FC = () => {
             setPlace(detectedPlace);
         } catch (error) {
           setError(error.message);
+          setLoading(false)
         }
     };
 
