@@ -36,7 +36,7 @@ export async function detectPlace(token: string, imageUri: string): Promise<stri
 
         return responseData.plate;
     } catch (error) {
-        throw new Error(error.message);
+        throw new Error("Algo deu errado, tente novamente mais tarde!");
     }
 }
 

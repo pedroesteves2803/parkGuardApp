@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, ViewStyle, Text } from 'react-native';
+import { StyleSheet, FlatList, ViewStyle, Text, TouchableOpacity } from 'react-native';
 import ItemComponent from './ItemComponent';
 
 interface Vehicle {
@@ -11,16 +11,24 @@ interface Vehicle {
 
 interface VehicleListProps {
   vehicles: Vehicle[];
+  navigation: any;
 }
 
-const VehicleListComponent: React.FC<VehicleListProps> = ({ vehicles }) => {
+const VehicleListComponent: React.FC<VehicleListProps> = ({ vehicles, navigation }) => {
+
+  const handleGetVehicleById = (id: number) => {
+    navigation.navigate('UpdateVehicle');
+  };
+
   const renderItem = ({ item }: { item: Vehicle }) => (
-    <ItemComponent
-      key={item.id}
-      plate={item.licensePlate}
-      date={item.entryTimes}
-      status={item.departureTimes == null ? "ESTACIONADO" : "LIBERADO"}
-    />
+    <TouchableOpacity onPress={() => handleGetVehicleById(item.id)}>
+      <ItemComponent
+        key={item.id}
+        plate={item.licensePlate}
+        date={item.entryTimes}
+        status={item.departureTimes == null ? "ESTACIONADO" : "LIBERADO"}
+      />
+    </TouchableOpacity>
   );
 
   return (

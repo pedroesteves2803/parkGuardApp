@@ -1,6 +1,6 @@
 import { AuthData, tokenReset } from "../contexts/AuthContext";
 
-const apiUrl = 'http://192.168.1.39/api';
+const apiUrl = 'http://192.168.1.124/api';
 
 export async function signIn(email: string, password: string): Promise<AuthData> {
     try {
@@ -44,7 +44,11 @@ export async function signIn(email: string, password: string): Promise<AuthData>
         };
 
     } catch (error) {
-        throw new Error(error.message || 'Ocorreu um erro desconhecido');
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }
     }
 }
 
@@ -61,10 +65,11 @@ export async function signOut(code: string): Promise<void> {
         });
 
         if (!response.ok) {
-            throw new Error('Credenciais inválidas!');
+            throw new Error('Algo deu errado, tente novamente mais tarde!');
         }
 
         const responseData = await response.json();
+
 
         if (!responseData.data.status) {
             const errors = responseData.data.errors;
@@ -80,7 +85,11 @@ export async function signOut(code: string): Promise<void> {
         }
 
     } catch (error) {
-        throw new Error(error.message || 'Ocorreu um erro desconhecido');
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }    
     }
 }
 
@@ -116,8 +125,11 @@ export async function resetPassword(email: string): Promise<void> {
         }
 
     } catch (error) {
-        throw new Error(error.message || 'Ocorreu um erro desconhecido');
-    }
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }    }
 }
 
 export async function verifyTokenResetPassword(code: string): Promise<tokenReset> {
@@ -160,7 +172,11 @@ export async function verifyTokenResetPassword(code: string): Promise<tokenReset
         };
 
     } catch (error) {
-        throw new Error(error.message || 'Ocorreu um erro desconhecido');
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }
     }
 }
 
@@ -197,7 +213,12 @@ export async function resetPasswordUpdate(code: string, password: string): Promi
 
         return true;
     } catch (error) {
-        throw new Error(error.message || 'Ocorreu um erro desconhecido');
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }       
+        
         return false;
     }
 }

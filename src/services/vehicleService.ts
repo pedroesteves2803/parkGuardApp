@@ -32,7 +32,11 @@ export async function getVehicles(token: string): Promise<CartData[]> {
 
         return responseData.data.vehicles;
     } catch (error) {
-        throw new Error(error.message);
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }
     }
 }
 
@@ -61,8 +65,11 @@ export async function createVehicle(token: string, licensePlate: string): Promis
 
         return responseData.data.vehicle;
     } catch (error) {
-        console.error('Erro ao cadastrar veículo:', error.message);
-        throw new Error(error.message);
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }
     }
 }
 

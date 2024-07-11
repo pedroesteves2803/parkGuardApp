@@ -3,15 +3,15 @@ import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } fr
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from 'expo-image-picker';
-import { useAuth } from '../contexts/AuthContext';
-import { AppStackParamList } from '../navigation/MainStack';
-import RegisterVehicleHeaderComponent from '../components/RegisterVehicle/Header/RegisterVehicleHeaderComponent';
-import RegisterVehicleSegmentedControl from '../components/RegisterVehicle/Controls/RegisterVehicleSegmentedControl';
-import { createVehicle } from '../services/vehicleService';
-import { detectPlace } from '../services/plateDetection';
-import AlertErrorModal from '../components/Shared/Modals/AlertErrorModal';
-import AlertSuccessModal from '../components/Shared/Modals/AlertSuccessModal';
-import { LoadingComponent } from '../components/Shared/Loading/LoadingErrorComponents';
+import { useAuth } from '../../contexts/AuthContext';
+import { AppStackParamList } from '../../navigation/MainStack';
+import RegisterVehicleHeaderComponent from '../../components/RegisterVehicle/Header/RegisterVehicleHeaderComponent';
+import RegisterVehicleSegmentedControl from '../../components/RegisterVehicle/Controls/RegisterVehicleSegmentedControl';
+import { createVehicle } from '../../services/vehicleService';
+import { detectPlace } from '../../services/plateDetection';
+import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
+import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
+import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
 
 
 const RegisterVehicleScreen: React.FC = () => {
@@ -123,7 +123,7 @@ const RegisterVehicleScreen: React.FC = () => {
                 {!image && (
                   <TouchableOpacity onPress={captureImage}> 
                     <View style={styles.section}>
-                      <Image source={require("../../assets/sendImage.png")} style={styles.sendImage} />
+                      <Image source={require("../../../assets/sendImage.png")} style={styles.sendImage} />
                       <Text style={styles.label}>Clique para carregar uma imagem ou tirar uma nova foto da placa do veículo</Text>
                       <Text style={styles.labelTypes}>Suportado: PNG, JPG, JPEG</Text>
                     </View>

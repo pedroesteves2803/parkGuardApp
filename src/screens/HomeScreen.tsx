@@ -57,7 +57,7 @@ const HomeScreen: React.FC = () => {
         <VehicleStatusSegmentedControl initialSegment={currentSegment} onSegmentChange={handleSegmentChange} />
 
         {!error && (
-          <VehicleListComponent vehicles={filteredVehicles} />
+          <VehicleListComponent vehicles={filteredVehicles} navigation={navigation} />
         )}
       </View>
     </View>
