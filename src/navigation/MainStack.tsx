@@ -7,7 +7,7 @@ import UpdateVehicleScreen from '../screens/Vehicle/VehicleUpdateScreen';
 export type AppStackParamList = {
   Home: undefined;
   RegisterVehicle: undefined;
-  UpdateVehicle: undefined;
+  UpdateVehicle: { id: number };
 };
 
 const Stack = createStackNavigator<AppStackParamList>();

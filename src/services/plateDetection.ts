@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-const plateDetectionUrl = 'http://192.168.1.124:8282';
+const plateDetectionUrl = 'http://localhost:8000';
 
 export async function detectPlace(token: string, imageUri: string): Promise<string> {
     try {

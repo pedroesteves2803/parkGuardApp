@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, FlatList, ViewStyle, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, FlatList, ViewStyle, TouchableOpacity } from 'react-native';
 import ItemComponent from './ItemComponent';
 
 interface Vehicle {
@@ -17,7 +17,7 @@ interface VehicleListProps {
 const VehicleListComponent: React.FC<VehicleListProps> = ({ vehicles, navigation }) => {
 
   const handleGetVehicleById = (id: number) => {
-    navigation.navigate('UpdateVehicle');
+    navigation.navigate('UpdateVehicle', { id });
   };
 
   const renderItem = ({ item }: { item: Vehicle }) => (

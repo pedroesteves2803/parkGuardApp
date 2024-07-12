@@ -1,19 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import RegisterVehicleHeaderComponent from '../../components/RegisterVehicle/Header/RegisterVehicleHeaderComponent';
 import { Image } from 'expo-image';
+import useFetchVehicleById from '../../hooks/useFetchVehicleById';
+import { useAuth } from '../../contexts/AuthContext';
+import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
+import { AppStackParamList } from '../../navigation/MainStack';
+import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 
-interface UpdateVehicleScreenProps {
-  navigation: any;
-}
+type UpdateVehicleScreenProps = NativeStackScreenProps<AppStackParamList, 'UpdateVehicle'>;
 
-const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation }) => {
+const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, route }) => {
+  const { id } = route.params;
+  const { authData } = useAuth();
   const [place, setPlace] = useState('');
   const [manufacturer, setManufacturer] = useState('');
   const [color, setColor] = useState('');
   const [model, setModel] = useState('');
   const [entryTimes, setEntryTimes] = useState('');
   const [departureTimes, setDepartureTimes] = useState('');
+  const { vehicle, loading, error, refetch } = useFetchVehicleById(authData?.token || '', id);
+
+  useEffect(() => {
+    if (vehicle) {
+      setPlace(vehicle.licensePlate);
+      setManufacturer(vehicle.manufacturer  || '');
+      setColor(vehicle.color  || '');
+      setModel(vehicle.model  || '');
+      setEntryTimes(vehicle.entryTimes  || '');
+      setDepartureTimes(vehicle.departureTimes || '');
+    }
+  }, [vehicle]);
+
+  if (loading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <View style={styles.container}>
@@ -23,10 +44,10 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation })
         onPress={() => navigation.goBack()}
       />
 
-    <TouchableOpacity style={styles.buttonUpdate}>
-      <Text style={styles.buttonLabelUpdate}>Editar</Text> 
-      <Image source={require("../../../assets/update.svg")} style={styles.imageButtonUpdate} />
-    </TouchableOpacity>
+      <TouchableOpacity style={styles.buttonUpdate}>
+        <Text style={styles.buttonLabelUpdate}>Editar</Text> 
+        <Image source={require("../../../assets/update.svg")} style={styles.imageButtonUpdate} />
+      </TouchableOpacity>
 
       <View style={styles.dataContainer}>
         <View style={styles.row}>
@@ -197,7 +218,7 @@ const styles = StyleSheet.create({
   imageButtonUpdate: {
     width: 20,
     height: 20,
-  }
+  },
 });
 
 export default UpdateVehicleScreen;

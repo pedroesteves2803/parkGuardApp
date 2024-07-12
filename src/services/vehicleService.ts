@@ -8,7 +8,7 @@ export interface CartData {
     departureTimes: string | null;
 }
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'http://localhost:8000/api';
 
 export async function getVehicles(token: string): Promise<CartData[]> {
     try {
@@ -31,6 +31,37 @@ export async function getVehicles(token: string): Promise<CartData[]> {
         }
 
         return responseData.data.vehicles;
+    } catch (error) {
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }
+    }
+}
+
+export async function getVehicleById(token: string, id: number): Promise<CartData> {
+    try {
+        const response = await fetch(`${apiUrl}/vehicle/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro na requisição (getVehicle): ${response.status} ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+
+        if (!responseData.data.status) {
+            throw new Error(responseData.data.errors[0].message || 'Erro ao obter veiculo');
+        }
+
+        console.log(responseData.data);
+        return responseData.data.vehicle;
     } catch (error) {
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");
@@ -73,4 +104,4 @@ export async function createVehicle(token: string, licensePlate: string): Promis
     }
 }
 
-export const vehicleService = { getVehicles, createVehicle };
+export const vehicleService = { getVehicles, getVehicleById, createVehicle };
