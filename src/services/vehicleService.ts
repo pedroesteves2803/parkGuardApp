@@ -5,10 +5,10 @@ export interface CartData {
     model: string;
     licensePlate: string;
     entryTimes: string;
-    departureTimes: string | null;
+    departureTimes: string;
 }
 
-const apiUrl = 'http://localhost:8000/api';
+const apiUrl = 'http://192.168.1.124/api';
 
 export async function getVehicles(token: string): Promise<CartData[]> {
     try {
@@ -103,5 +103,56 @@ export async function createVehicle(token: string, licensePlate: string): Promis
         }
     }
 }
+
+export async function updateVehicle(
+    token: string,
+    id: number,
+    manufacturer?: string,
+    color?: string,
+    model?: string,
+    licensePlate?: string,
+    entryTimes?: string,
+    departureTimes?: string
+) {
+    try {
+        const requestBody: any = {};
+
+        if (manufacturer) requestBody.manufacturer = manufacturer;
+        if (color) requestBody.color = color;
+        if (model) requestBody.model = model;
+        if (licensePlate) requestBody.licensePlate = licensePlate;
+        if (entryTimes) requestBody.entryTimes = entryTimes;
+        if (departureTimes) requestBody.departureTimes = departureTimes;
+
+        const response = await fetch(`${apiUrl}/vehicle/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro na requisição (updateVehicle): ${response.status} ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+
+        if (!responseData.data.status) {
+            throw new Error(responseData.data.errors[0].message || 'Erro ao atualizar cadastrar!');
+        }
+
+        return responseData.data.vehicle;
+    } catch (error) {
+        console.log(error);
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            throw new Error(error.message);
+        }
+    }
+}
+
 
 export const vehicleService = { getVehicles, getVehicleById, createVehicle };

@@ -69,6 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuth(undefined);
       AsyncStorage.removeItem('@AuthData');
     } catch (error) {
+      console.log(error)
       setErrorMessage(error.message);
     }
   }

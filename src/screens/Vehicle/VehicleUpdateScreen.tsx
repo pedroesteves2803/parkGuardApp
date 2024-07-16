@@ -7,6 +7,9 @@ import { useAuth } from '../../contexts/AuthContext';
 import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
 import { AppStackParamList } from '../../navigation/MainStack';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
+import { updateVehicle } from '../../services/vehicleService';
+import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
+import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
 
 type UpdateVehicleScreenProps = NativeStackScreenProps<AppStackParamList, 'UpdateVehicle'>;
 
@@ -19,18 +22,35 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
   const [model, setModel] = useState('');
   const [entryTimes, setEntryTimes] = useState('');
   const [departureTimes, setDepartureTimes] = useState('');
-  const { vehicle, loading, error, refetch } = useFetchVehicleById(authData?.token || '', id);
+  const { vehicle, loading, refetch } = useFetchVehicleById(authData?.token || '', id);
+  const [isEditable, setIsEditable] = useState(false); // Estado para controlar se os campos estão editáveis
+  const [success, setSuccess] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     if (vehicle) {
       setPlace(vehicle.licensePlate);
-      setManufacturer(vehicle.manufacturer  || '');
-      setColor(vehicle.color  || '');
-      setModel(vehicle.model  || '');
-      setEntryTimes(vehicle.entryTimes  || '');
-      setDepartureTimes(vehicle.departureTimes || '');
+      setManufacturer(vehicle.manufacturer);
+      setColor(vehicle.color);
+      setModel(vehicle.model);
+      setEntryTimes(vehicle.entryTimes);
+      setDepartureTimes(vehicle.departureTimes);
     }
   }, [vehicle]);
+
+  const handleEditPress = () => {
+    setIsEditable(!isEditable);
+  };
+
+  const handleSavePress = async () => {
+    try {
+        const response = await updateVehicle(authData?.token || '', id, manufacturer, color, model, place, entryTimes, departureTimes);
+        setSuccess(`Veículo ${response.licensePlate} atualizado!`);
+        setIsEditable(!isEditable);               
+    } catch (error) {
+      setError(error.message);
+    }
+};
 
   if (loading) {
     return <LoadingComponent />;
@@ -38,16 +58,34 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
 
   return (
     <View style={styles.container}>
+            <AlertErrorModal visible={!!error} onClose={() => setError('')} message={error} />
+            <AlertSuccessModal visible={!!success} onClose={() => setSuccess('')} message={success} />
+
       <RegisterVehicleHeaderComponent
         title="Veículo Cadastrado"
         subtitle="Visualize, edite, libere ou exclua as informações do veículo selecionado."
         onPress={() => navigation.goBack()}
       />
+      
+      {!isEditable && (
+        <TouchableOpacity
+          style={[styles.buttonUpdate]}
+          onPress={handleEditPress}
+        >
+          <Text style={styles.buttonLabelUpdate}>Editar</Text>
+          <Image source={require("../../../assets/update.svg")} style={styles.imageButtonUpdate} />
+        </TouchableOpacity>
+      )}
 
-      <TouchableOpacity style={styles.buttonUpdate}>
-        <Text style={styles.buttonLabelUpdate}>Editar</Text> 
-        <Image source={require("../../../assets/update.svg")} style={styles.imageButtonUpdate} />
-      </TouchableOpacity>
+      {isEditable && (
+        <TouchableOpacity
+          style={[styles.buttonSave]}
+          onPress={handleSavePress}
+        >
+          <Text style={styles.buttonLabelUpdate}>Salvar</Text>
+          <Image source={require("../../../assets/save.png")} style={styles.imageButtonSave} />
+        </TouchableOpacity>
+      )}
 
       <View style={styles.dataContainer}>
         <View style={styles.row}>
@@ -58,6 +96,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
               value={place}
               placeholderTextColor="rgba(255, 255, 255, 0.6)"
               onChangeText={setPlace}
+              editable={isEditable} // Controla se o campo está editável
             />
           </View>
           <View style={styles.inputContainer}>
@@ -67,6 +106,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
               placeholderTextColor="rgba(255, 255, 255, 0.6)"
               value={manufacturer}
               onChangeText={setManufacturer}
+              editable={isEditable} // Controla se o campo está editável
             />
           </View>
         </View>
@@ -79,6 +119,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
               placeholderTextColor="rgba(255, 255, 255, 0.6)"
               value={color}
               onChangeText={setColor}
+              editable={isEditable} // Controla se o campo está editável
             />
           </View>
           <View style={styles.inputContainer}>
@@ -88,6 +129,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
               placeholderTextColor="rgba(255, 255, 255, 0.6)"
               value={model}
               onChangeText={setModel}
+              editable={isEditable} // Controla se o campo está editável
             />
           </View>
         </View>
@@ -100,6 +142,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
             placeholderTextColor="rgba(255, 255, 255, 0.6)"
             value={entryTimes}
             onChangeText={setEntryTimes}
+            editable={isEditable} // Controla se o campo está editável
           />
         </View>
 
@@ -111,6 +154,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
             placeholderTextColor="rgba(255, 255, 255, 0.6)"
             value={departureTimes}
             onChangeText={setDepartureTimes}
+            editable={isEditable} // Controla se o campo está editável
           />
         </View>
 
@@ -119,7 +163,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
             <Text style={styles.buttonLabel}>Excluir</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.button, styles.buttonSave]}>
+          <TouchableOpacity style={[styles.button, styles.buttonLiberar]}>
             <Text style={styles.buttonLabel}>Liberar</Text>
           </TouchableOpacity>
         </View>
@@ -154,8 +198,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   input: {
-    flex: 1,
-    paddingVertical: 20,
+    paddingVertical: 10,
     color: "rgba(255, 255, 255, 0.6)",
     fontFamily: "Jura-Medium",
     borderBottomWidth: 1,
@@ -189,7 +232,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.46,
     textAlign: 'center',
   },
-  buttonSave: {
+  buttonLiberar: {
     backgroundColor: "#0393AE",
   },
   buttonDelete: {
@@ -206,6 +249,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     backgroundColor: "#5F5F5F",
   },
+  buttonSave: {
+    padding: 5,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    left: 47,
+    width: 100,
+    height: 37,
+    borderRadius: 8,
+    marginHorizontal: 5,
+    backgroundColor: "#4CAF50",
+  },
   buttonLabelUpdate: {
     color: "#FFF",
     fontFamily: 'Roboto-Medium',
@@ -216,6 +270,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   imageButtonUpdate: {
+    width: 20,
+    height: 20,
+  },
+  imageButtonSave: {
     width: 20,
     height: 20,
   },
