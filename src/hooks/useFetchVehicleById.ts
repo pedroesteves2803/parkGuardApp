@@ -11,7 +11,11 @@ const useFetchVehicleById = (token: string, id: number) => {
       const vehicleData = await getVehicleById(token, id);
       setVehicle(vehicleData);
     } catch (error) {
-      setError(error.message);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('Ocorreu um erro desconhecido.');
+      }
     } finally {
       setLoading(false);
     }

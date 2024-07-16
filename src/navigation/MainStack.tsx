@@ -2,12 +2,14 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen';
 import RegisterVehicleScreen from '../screens/Vehicle/RegisterVehicleScreen';
-import UpdateVehicleScreen from '../screens/Vehicle/VehicleUpdateScreen';
+import UpdateVehicleScreen from '../screens/Vehicle/UpdateVehicleScreen';
+import RegisterPaymentScreen from '../screens/Payment/RegisterPaymentScreen';
 
 export type AppStackParamList = {
   Home: undefined;
   RegisterVehicle: undefined;
   UpdateVehicle: { id: number };
+  RegisterPayment: { id: number };
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -18,6 +20,7 @@ const MainStack: React.FC = () => {
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="RegisterVehicle" component={RegisterVehicleScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="UpdateVehicle" component={UpdateVehicleScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name="RegisterPayment" component={RegisterPaymentScreen} options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 }

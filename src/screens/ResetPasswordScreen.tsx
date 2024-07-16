@@ -6,7 +6,6 @@ import LoginInputComponent from '../components/Login/Forms/LoginInputComponent';
 import { useAuth } from '../contexts/AuthContext';
 import AlertErrorModal from '../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../components/Shared/Modals/AlertSuccessModal';
-import { useNavigation } from '@react-navigation/native';
 
 interface ResetPasswordScreenProps {
   navigation: any;

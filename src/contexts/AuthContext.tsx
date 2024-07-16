@@ -69,8 +69,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setAuth(undefined);
       AsyncStorage.removeItem('@AuthData');
     } catch (error) {
-      console.log(error)
-      setErrorMessage(error.message);
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('Ocorreu um erro desconhecido.');
+      }
     }
   }
 
@@ -79,7 +82,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await authService.resetPassword(email);
       return true;
     } catch (error) {
-      setErrorMessage(error.message);
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('Ocorreu um erro desconhecido.');
+      }
       return false;
     }
   }
@@ -90,7 +97,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       AsyncStorage.setItem('codeReset', code);
       return response;
     } catch (error) {
-      setErrorMessage(error.message);
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('Ocorreu um erro desconhecido.');
+      }
       return false;
     }
   }
@@ -106,7 +117,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await authService.resetPasswordUpdate(storedCode, password);
       return response;
     } catch (error) {
-      setErrorMessage(error.message);
+      if (error instanceof Error) {
+        setErrorMessage(error.message);
+      } else {
+        setErrorMessage('Ocorreu um erro desconhecido.');
+      }
       return false;
     }
   }

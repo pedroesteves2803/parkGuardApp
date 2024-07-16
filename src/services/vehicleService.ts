@@ -35,7 +35,11 @@ export async function getVehicles(token: string): Promise<CartData[]> {
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");
         } else {
-            throw new Error(error.message);
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            } else {
+                throw new Error('Ocorreu um erro desconhecido.');
+            }
         }
     }
 }
@@ -60,13 +64,16 @@ export async function getVehicleById(token: string, id: number): Promise<CartDat
             throw new Error(responseData.data.errors[0].message || 'Erro ao obter veiculo');
         }
 
-        console.log(responseData.data);
         return responseData.data.vehicle;
     } catch (error) {
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");
         } else {
-            throw new Error(error.message);
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            } else {
+                throw new Error('Ocorreu um erro desconhecido.');
+            }
         }
     }
 }
@@ -99,7 +106,11 @@ export async function createVehicle(token: string, licensePlate: string): Promis
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");
         } else {
-            throw new Error(error.message);
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            } else {
+                throw new Error('Ocorreu um erro desconhecido.');
+            }
         }
     }
 }
@@ -111,9 +122,7 @@ export async function updateVehicle(
     color?: string,
     model?: string,
     licensePlate?: string,
-    entryTimes?: string,
-    departureTimes?: string
-) {
+): Promise<CartData> {
     try {
         const requestBody: any = {};
 
@@ -121,8 +130,6 @@ export async function updateVehicle(
         if (color) requestBody.color = color;
         if (model) requestBody.model = model;
         if (licensePlate) requestBody.licensePlate = licensePlate;
-        if (entryTimes) requestBody.entryTimes = entryTimes;
-        if (departureTimes) requestBody.departureTimes = departureTimes;
 
         const response = await fetch(`${apiUrl}/vehicle/${id}`, {
             method: 'PUT',
@@ -140,19 +147,62 @@ export async function updateVehicle(
         const responseData = await response.json();
 
         if (!responseData.data.status) {
-            throw new Error(responseData.data.errors[0].message || 'Erro ao atualizar cadastrar!');
+            throw new Error(responseData.data.errors[0].message || 'Erro ao atualizar veiculo!');
         }
 
         return responseData.data.vehicle;
     } catch (error) {
-        console.log(error);
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");
         } else {
-            throw new Error(error.message);
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            } else {
+                throw new Error('Ocorreu um erro desconhecido.');
+            }
+        }
+    }
+}
+
+export async function exitVehicle(
+    token: string,
+    licensePlate?: string,
+): Promise<void> {
+    try {
+
+        const response = await fetch(`${apiUrl}/vehicle/exit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                licensePlate: licensePlate,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro na requisição (exitVehicle): ${response.status} ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+
+        if (!responseData.data.status) {
+            throw new Error(responseData.data.errors[0].message || 'Erro ao retirar veiculo!');
+        }
+    } catch (error) {
+
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            } else {
+                throw new Error('Ocorreu um erro desconhecido.');
+            }
         }
     }
 }
 
 
-export const vehicleService = { getVehicles, getVehicleById, createVehicle };
+export const vehicleService = { getVehicles, getVehicleById, createVehicle, updateVehicle, exitVehicle };

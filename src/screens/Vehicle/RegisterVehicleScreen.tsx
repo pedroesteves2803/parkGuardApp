@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
-import { Button, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from 'expo-image-picker';
 import { useAuth } from '../../contexts/AuthContext';
 import { AppStackParamList } from '../../navigation/MainStack';
-import RegisterVehicleHeaderComponent from '../../components/RegisterVehicle/Header/RegisterVehicleHeaderComponent';
 import RegisterVehicleSegmentedControl from '../../components/RegisterVehicle/Controls/RegisterVehicleSegmentedControl';
 import { createVehicle } from '../../services/vehicleService';
 import { detectPlace } from '../../services/plateDetection';
 import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
 import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
+import HeaderComponent from '../../components/Shared/Header/HeaderComponent';
 
 
 const RegisterVehicleScreen: React.FC = () => {
@@ -34,7 +34,11 @@ const RegisterVehicleScreen: React.FC = () => {
             setSuccess(`Veículo ${response.licensePlate} adicionado!`);
             setLoading(false)
         } catch (error) {
-          setError(error.message);
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError('Ocorreu um erro desconhecido.');
+          }
           setLoading(false)
         }
     };
@@ -46,7 +50,11 @@ const RegisterVehicleScreen: React.FC = () => {
             setSuccess(`Veículo ${response.licensePlate} adicionado!`);
             setLoading(false)
         } catch (error) {
-          setError(error.message);
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError('Ocorreu um erro desconhecido.');
+          }
           setLoading(false)
         }
     };
@@ -58,7 +66,11 @@ const RegisterVehicleScreen: React.FC = () => {
             setPlace(detectedPlace);
             setLoading(false)
         } catch (error) {
-          setError(error.message);
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError('Ocorreu um erro desconhecido.');
+          }
           setLoading(false)
         }
     };
@@ -100,7 +112,7 @@ const RegisterVehicleScreen: React.FC = () => {
             <AlertErrorModal visible={!!error} onClose={() => setError('')} message={error} />
             <AlertSuccessModal visible={!!success} onClose={() => setSuccess('')} message={success} />
 
-            <RegisterVehicleHeaderComponent
+            <HeaderComponent
               title="Registro de veículo" 
               subtitle="Capture uma foto ou digite a placa para salvar o registro" 
               onPress={() => navigation.goBack()} 

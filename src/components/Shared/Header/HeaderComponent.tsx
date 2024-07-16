@@ -1,14 +1,13 @@
-// RegisterVehicleHeader.tsx
 import React from 'react';
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
 
-interface RegisterVehicleHeaderProps {
+interface HeaderProps {
   title?: string;
   subtitle?: string;
   onPress: () => void;
 }
 
-const RegisterVehicleHeaderComponent: React.FC<RegisterVehicleHeaderProps> = ({ title, subtitle, onPress }) => {
+const HeaderComponent: React.FC<HeaderProps> = ({ title, subtitle, onPress }) => {
 
   return (
     <View style={styles.container}>
@@ -68,4 +67,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegisterVehicleHeaderComponent;
+export default HeaderComponent;
