@@ -92,8 +92,8 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
     }
   };
 
-  const handleReleasePress = async (id: number) => {
-    navigation.navigate('RegisterPayment', { id });
+  const handleReleasePress = async (id: number, licensePlate: string) => {
+    navigation.navigate('RegisterPayment', { id, licensePlate });
   };
 
   if (loading) {
@@ -202,7 +202,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
                     <Text style={styles.buttonLabel}>Retirar</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={[styles.button, styles.buttonLiberar]} onPress={() => handleReleasePress(id)}>
+                  <TouchableOpacity style={[styles.button, styles.buttonLiberar]} onPress={() => handleReleasePress(id, licensePlate)}>
                     <Text style={styles.buttonLabel}>Liberar</Text>
                   </TouchableOpacity>
                 </>
@@ -238,7 +238,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -10,
     color: "rgba(255, 255, 255, 0.6)",
-    paddingHorizontal: 5,
   },
   input: {
     paddingVertical: 10,

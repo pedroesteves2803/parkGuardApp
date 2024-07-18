@@ -6,17 +6,36 @@ import { AppStackParamList } from '../../navigation/MainStack';
 import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
 import HeaderComponent from '../../components/Shared/Header/HeaderComponent';
+import { createPayment } from '../../services/paymentService';
+import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
 
 type RegisterPaymentScreenProps = NativeStackScreenProps<AppStackParamList, 'RegisterPayment'>;
 
 const RegisterPaymentScreen: React.FC<RegisterPaymentScreenProps> = ({ navigation, route }) => {
-    const { id } = route.params;
+    const { id, licensePlate } = route.params;
     const { authData } = useAuth();
     const [success, setSuccess] = useState<string>('');
     const [error, setError] = useState<string>('');
-    const [licensePlate, setLicensePlate] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
+    const [loading, setLoading] = useState<boolean>(false);
 
+    const handleCreatePayment = async () => {
+        try {
+            setLoading(true)
+            const response = await createPayment(authData?.token || '', id, paymentMethod);
+            console.log(response);
+            setSuccess(`Pagamento criado!`);
+            setLoading(false)
+            navigation.navigate('ReleasePayment', { paymentData: response, licensePlate });
+        } catch (error) {
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError('Ocorreu um erro desconhecido.');
+          }
+          setLoading(false)
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -44,15 +63,22 @@ const RegisterPaymentScreen: React.FC<RegisterPaymentScreenProps> = ({ navigatio
                     <TextInput
                         style={styles.input}
                         placeholderTextColor="rgba(255, 255, 255, 0.6)"
-                        onChangeText={setLicensePlate}
+                        value={licensePlate}
+                        editable={false}
                     />
                 </View>
 
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={[styles.button]}>
-                        <Text style={styles.buttonLabel}>Salvar</Text>
-                    </TouchableOpacity>
-                </View>
+                {loading && (
+                  <LoadingComponent />
+                )}
+
+                {!loading && (
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={[styles.button]} onPress={handleCreatePayment}>
+                            <Text style={styles.buttonLabel}>Salvar</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
             </View>
         </View>
     );
@@ -100,8 +126,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: "#0393AE",
 
-      },
-      buttonLabel: {
+    },
+    buttonLabel: {
         color: "#FFF",
         fontFamily: 'Roboto-Medium',
         fontSize: 15,
