@@ -28,6 +28,11 @@ const RegisterVehicleScreen: React.FC = () => {
 
     const saveVehicleInput = async () => {
         try {
+            if (place === '') {
+              setError('Preencha os campos para continuar.');
+              return;
+            }  
+
             setLoading(true)
             setImage(null);
             const response = await createVehicle(authData?.token || '', place);
@@ -44,6 +49,11 @@ const RegisterVehicleScreen: React.FC = () => {
     };
 
     const saveVehicleImage = async () => {
+        if (place === '') {
+          setError('Preencha os campos para continuar.');
+          return;
+        }  
+
         try {
             setLoading(true)
             const response = await createVehicle(authData?.token || '', place);
@@ -60,6 +70,7 @@ const RegisterVehicleScreen: React.FC = () => {
     };
 
     const detectPlaceService = async (imageUri: string) => {
+
         try {
             setLoading(true)
             const detectedPlace = await detectPlace(authData?.token || '', imageUri);
@@ -111,6 +122,7 @@ const RegisterVehicleScreen: React.FC = () => {
         <View style={styles.container}>
             <AlertErrorModal visible={!!error} onClose={() => setError('')} message={error} />
             <AlertSuccessModal visible={!!success} onClose={() => setSuccess('')} message={success} />
+            
 
             <HeaderComponent
               title="Registro de veículo" 

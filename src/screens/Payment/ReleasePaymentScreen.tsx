@@ -6,8 +6,9 @@ import { AppStackParamList } from '../../navigation/MainStack';
 import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
 import HeaderComponent from '../../components/Shared/Header/HeaderComponent';
-import { createPayment } from '../../services/paymentService';
+import { createPayment, finalizePayment } from '../../services/paymentService';
 import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
+import { CartData, getVehicleById } from '../../services/vehicleService';
 
 type ReleasePaymentScreenProps = NativeStackScreenProps<AppStackParamList, 'ReleasePayment'>;
 
@@ -19,6 +20,8 @@ const ReleasePaymentScreen: React.FC<ReleasePaymentScreenProps> = ({ navigation,
     const [paymentMethod, setPaymentMethod] = useState<string>('');
     const [value, setValue] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
+    const [vehicle, setVehicle] = useState<CartData>();
+
 
     const formatPaymentMethod = (method: number) => {
         switch (method) {
@@ -33,29 +36,44 @@ const ReleasePaymentScreen: React.FC<ReleasePaymentScreenProps> = ({ navigation,
         }
     };
 
+    const getVehivleById = async (token: string, id: number) => {
+        try {
+            const vehicleData = await getVehicleById(token, id);
+
+            setVehicle(vehicleData);
+        } catch (error) {
+          if (error instanceof Error) {
+            setError(error.message);
+          } else {
+            setError('Ocorreu um erro desconhecido.');
+          }
+        }
+      };
+
     useEffect(() => {
         if (paymentData) {
             setValue(`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(paymentData.value_in_reais)}`);
             setPaymentMethod(formatPaymentMethod(paymentData.paymentMethod));
+            getVehivleById(authData?.token || '', paymentData.vehicle_id)
         }
     }, [paymentData]);
 
-    // const handleCreatePayment = async () => {
-    //     try {
-    //         setLoading(true);
-    //         const response = await createPayment(authData?.token || '', id, paymentMethod);
-    //         console.log(response);
-    //         setSuccess('Pagamento criado!');
-    //         setLoading(false);
-    //     } catch (error) {
-    //         if (error instanceof Error) {
-    //             setError(error.message);
-    //         } else {
-    //             setError('Ocorreu um erro desconhecido.');
-    //         }
-    //         setLoading(false);
-    //     }
-    // };
+    const handleFinalizePayment = async () => {
+        try {  
+            setLoading(true);
+            await finalizePayment(authData?.token || '', paymentData.id);
+            setSuccess('Veiculo liberado!');
+            setLoading(false);
+            navigation.navigate('Home');
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError('Ocorreu um erro desconhecido.');
+            }
+            setLoading(false);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -65,7 +83,7 @@ const ReleasePaymentScreen: React.FC<ReleasePaymentScreenProps> = ({ navigation,
             <HeaderComponent
                 title="Liberação do Veículo"
                 subtitle="Verifique o valor a ser pago e libere o veículo após a confirmação do pagamento."
-                onPress={() => navigation.goBack()}
+                onPress={() => navigation.navigate('Home')}
             />
 
             <View style={styles.dataContainer}>
@@ -107,6 +125,7 @@ const ReleasePaymentScreen: React.FC<ReleasePaymentScreenProps> = ({ navigation,
                         style={styles.input}
                         placeholder="Horário de entrada"
                         placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                        value={vehicle?.entryTimes}
                         editable={false}
                     />
                 </View>
@@ -117,15 +136,25 @@ const ReleasePaymentScreen: React.FC<ReleasePaymentScreenProps> = ({ navigation,
                         style={styles.input}
                         placeholder="Horário de saída"
                         placeholderTextColor="rgba(255, 255, 255, 0.6)"
+                        value={vehicle?.departureTimes}
                         editable={false}
                     />
                 </View>
 
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={[styles.button]}>
-                        <Text style={styles.buttonLabel}>Liberar veículo</Text>
-                    </TouchableOpacity>
-                </View>
+
+
+
+                {loading && (
+                  <LoadingComponent />
+                )}
+
+                {!loading && (
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity style={[styles.button]} onPress={handleFinalizePayment}>
+                            <Text style={styles.buttonLabel}>Liberar veículo</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
             </View>
         </View>
     );

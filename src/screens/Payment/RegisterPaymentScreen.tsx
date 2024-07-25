@@ -8,6 +8,7 @@ import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal'
 import HeaderComponent from '../../components/Shared/Header/HeaderComponent';
 import { createPayment } from '../../services/paymentService';
 import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
+import { Picker } from '@react-native-picker/picker';
 
 type RegisterPaymentScreenProps = NativeStackScreenProps<AppStackParamList, 'RegisterPayment'>;
 
@@ -21,9 +22,12 @@ const RegisterPaymentScreen: React.FC<RegisterPaymentScreenProps> = ({ navigatio
 
     const handleCreatePayment = async () => {
         try {
+            if (paymentMethod === '') {
+                setError('Preencha os campos para continuar.');
+                return;
+            }     
             setLoading(true)
             const response = await createPayment(authData?.token || '', id, paymentMethod);
-            console.log(response);
             setSuccess(`Pagamento criado!`);
             setLoading(false)
             navigation.navigate('ReleasePayment', { paymentData: response, licensePlate });
@@ -45,17 +49,22 @@ const RegisterPaymentScreen: React.FC<RegisterPaymentScreenProps> = ({ navigatio
              <HeaderComponent
                 title="Liberação do Veículo"
                 subtitle="Selecione a forma de pagamento para liberar o veículo."
-                onPress={() => navigation.goBack()}
+                onPress={() => navigation.navigate('Home')}
             />
 
             <View style={styles.dataContainer}>
                 <View style={styles.inputContainer}>
                     <Text style={styles.labelInput}>Tipo de Pagamento</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholderTextColor="rgba(255, 255, 255, 0.6)"
-                        onChangeText={setPaymentMethod}
-                    />
+                    <Picker
+                        selectedValue={paymentMethod}
+                        onValueChange={(itemValue) => setPaymentMethod(itemValue)}
+                        style={styles.picker}
+                        prompt="Selecione um método de pagamento"
+                    >
+                        <Picker.Item color='#000'label="Cartão de Débito" value="1" />
+                        <Picker.Item color='#000' label="Cartão de Crédito" value="2" />
+                        <Picker.Item color='#000' label="Pix" value="3" />
+                    </Picker>
                 </View>
 
                 <View style={styles.inputContainer}>
@@ -135,6 +144,15 @@ const styles = StyleSheet.create({
         lineHeight: 26,
         letterSpacing: 0.46,
         textAlign: 'center',
+    },
+    picker: {
+        height: 50,
+        backgroundColor: "transparent",
+        fontFamily: "Jura-Medium",
+        borderWidth: 0, 
+        borderBottomWidth: 1,
+        borderBottomColor: "rgba(255, 255, 255, 0.6)",
+        color: "rgba(255, 255, 255, 0.6)",
     },
 });
 

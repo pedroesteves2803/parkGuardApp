@@ -8,7 +8,7 @@ export interface PaymentData {
     vehicle_id: number;
 }
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'http://127.0.0.1:8000/api';
 
 export async function createPayment(token: string, vehicleId: number, paymentMethod: string): Promise<PaymentData> {
     try {
@@ -30,8 +30,6 @@ export async function createPayment(token: string, vehicleId: number, paymentMet
 
         const responseData = await response.json();
 
-        console.log(responseData);
-
         if (!responseData.data.status) {
             throw new Error(responseData.data.errors[0].message || 'Erro ao criar pagamento');
         }
@@ -50,4 +48,38 @@ export async function createPayment(token: string, vehicleId: number, paymentMet
     }
 }
 
-export const paymentService = { createPayment };
+export async function finalizePayment(token: string, paymentID: number): Promise<void> {
+    try {
+        const response = await fetch(`${apiUrl}/payment/${paymentID}/finalize`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro na requisição (finalizePayment): ${response.status} ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+
+        if (!responseData.data.status) {
+            throw new Error(responseData.data.errors[0].message || 'Erro ao finalizar pagamento');
+        }
+
+        return responseData.data.payment;
+    } catch (error) {
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            } else {
+                throw new Error('Ocorreu um erro desconhecido.');
+            }
+        }
+    }
+}
+
+export const paymentService = { createPayment, finalizePayment };

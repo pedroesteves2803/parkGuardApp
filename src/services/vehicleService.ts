@@ -8,7 +8,7 @@ export interface CartData {
     departureTimes: string;
 }
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'http://127.0.0.1:8000/api';
 
 export async function getVehicles(token: string): Promise<CartData[]> {
     try {
@@ -203,6 +203,5 @@ export async function exitVehicle(
         }
     }
 }
-
 
 export const vehicleService = { getVehicles, getVehicleById, createVehicle, updateVehicle, exitVehicle };
