@@ -35,7 +35,7 @@ const RegisterVehicleScreen: React.FC = () => {
 
             setLoading(true)
             setImage(null);
-            const response = await createVehicle(authData?.token || '', place);
+            const response = await createVehicle(authData?.token || '', place.toUpperCase());
             setSuccess(`Veículo ${response.licensePlate} adicionado!`);
             setLoading(false)
         } catch (error) {
@@ -56,7 +56,7 @@ const RegisterVehicleScreen: React.FC = () => {
 
         try {
             setLoading(true)
-            const response = await createVehicle(authData?.token || '', place);
+            const response = await createVehicle(authData?.token || '', place.toUpperCase());
             setSuccess(`Veículo ${response.licensePlate} adicionado!`);
             setLoading(false)
         } catch (error) {
