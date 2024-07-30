@@ -36,9 +36,9 @@ const VehicleStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegm
         <Text style={[styles.segmentText, selectedSegment === 'Histórico' && styles.selectedText]}>Histórico</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.filters} onPress={() => handleSegmentPress('Atuais')}>
+      {/* <TouchableOpacity style={styles.filters} onPress={() => handleSegmentPress('Atuais')}>
         <Image source={require("../../../../assets/filter.png")} style={styles.filterImage} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
