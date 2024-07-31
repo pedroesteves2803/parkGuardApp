@@ -1,31 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
-import useFetchVehicleById from '../../hooks/useFetchVehicleById';
-import { useAuth } from '../../contexts/AuthContext';
-import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
-import { AppStackParamList } from '../../navigation/MainStack';
-import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
-import { exitVehicle, updateVehicle } from '../../services/vehicleService';
-import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
-import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
-import HeaderComponent from '../../components/Shared/Header/HeaderComponent';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
+import { Image } from "expo-image";
+import useFetchVehicleById from "../../hooks/useFetchVehicleById";
+import { useAuth } from "../../contexts/AuthContext";
+import { LoadingComponent } from "../../components/Shared/Loading/LoadingErrorComponents";
+import { AppStackParamList } from "../../navigation/MainStack";
+import { NativeStackScreenProps } from "react-native-screens/lib/typescript/native-stack/types";
+import { exitVehicle, updateVehicle } from "../../services/vehicleService";
+import AlertSuccessModal from "../../components/Shared/Modals/AlertSuccessModal";
+import AlertErrorModal from "../../components/Shared/Modals/AlertErrorModal";
+import HeaderComponent from "../../components/Shared/Header/HeaderComponent";
 
-type UpdateVehicleScreenProps = NativeStackScreenProps<AppStackParamList, 'UpdateVehicle'>;
+type UpdateVehicleScreenProps = NativeStackScreenProps<
+  AppStackParamList,
+  "UpdateVehicle"
+>;
 
-const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, route }) => {
+const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({
+  navigation,
+  route,
+}) => {
   const { id } = route.params;
   const { authData } = useAuth();
-  const [licensePlate, setLicensePlate] = useState('');
-  const [manufacturer, setManufacturer] = useState('');
-  const [color, setColor] = useState('');
-  const [model, setModel] = useState('');
-  const [entryTimes, setEntryTimes] = useState('');
-  const [departureTimes, setDepartureTimes] = useState('');
-  const { vehicle, loading, refetch } = useFetchVehicleById(authData?.token || '', id);
+  const [licensePlate, setLicensePlate] = useState("");
+  const [manufacturer, setManufacturer] = useState("");
+  const [color, setColor] = useState("");
+  const [model, setModel] = useState("");
+  const [entryTimes, setEntryTimes] = useState("");
+  const [departureTimes, setDepartureTimes] = useState("");
+  const { vehicle, loading, refetch } = useFetchVehicleById(
+    authData?.token || "",
+    id
+  );
   const [isEditable, setIsEditable] = useState(false);
-  const [success, setSuccess] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [success, setSuccess] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const [loadingUpdate, setLoadingUpdate] = useState<boolean>(false);
   const [exitUpdate, setExitUpdate] = useState<boolean>(false);
   const [refreshKey, setRefreshKey] = useState<number>(0);
@@ -35,8 +50,8 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
   }, [refreshKey]);
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      setRefreshKey(prevKey => prevKey + 1);
+    const unsubscribe = navigation.addListener("focus", () => {
+      setRefreshKey((prevKey) => prevKey + 1);
     });
 
     return unsubscribe;
@@ -55,12 +70,20 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
 
   const handleEditPress = () => {
     setIsEditable(true);
+
   };
 
   const handleSavePress = async () => {
     try {
       setLoadingUpdate(true);
-      const response = await updateVehicle(authData?.token || '', id, manufacturer, color, model, licensePlate);
+      const response = await updateVehicle(
+        authData?.token || "",
+        id,
+        manufacturer,
+        color,
+        model,
+        licensePlate
+      );
       setSuccess(`Veículo ${response.licensePlate} atualizado!`);
       setIsEditable(false);
       setLoadingUpdate(false);
@@ -69,7 +92,7 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Ocorreu um erro desconhecido.');
+        setError("Ocorreu um erro desconhecido.");
       }
       setLoadingUpdate(false);
     }
@@ -78,22 +101,22 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
   const handleExitPress = async () => {
     try {
       setExitUpdate(true);
-      await exitVehicle(authData?.token || '', licensePlate);
-      setSuccess('Veículo retirado!');
+      await exitVehicle(authData?.token || "", licensePlate);
+      setSuccess("Veículo retirado!");
       setExitUpdate(false);
       refetch();
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Ocorreu um erro desconhecido.');
+        setError("Ocorreu um erro desconhecido.");
       }
       setExitUpdate(false);
     }
   };
 
   const handleReleasePress = async (id: number, licensePlate: string) => {
-    navigation.navigate('RegisterPayment', { id, licensePlate });
+    navigation.navigate("RegisterPayment", { id, licensePlate });
   };
 
   if (loading) {
@@ -102,8 +125,16 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
 
   return (
     <View style={styles.container}>
-      <AlertErrorModal visible={!!error} onClose={() => setError('')} message={error} />
-      <AlertSuccessModal visible={!!success} onClose={() => setSuccess('')} message={success} />
+      <AlertErrorModal
+        visible={!!error}
+        onClose={() => setError("")}
+        message={error}
+      />
+      <AlertSuccessModal
+        visible={!!success}
+        onClose={() => setSuccess("")}
+        message={success}
+      />
       {(loadingUpdate || exitUpdate) && <LoadingComponent />}
 
       {!loadingUpdate && !exitUpdate && (
@@ -116,14 +147,26 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
           {!departureTimes && (
             <>
               {!isEditable ? (
-                <TouchableOpacity style={styles.buttonUpdate} onPress={handleEditPress}>
+                <TouchableOpacity
+                  style={styles.buttonUpdate}
+                  onPress={handleEditPress}
+                >
                   <Text style={styles.buttonLabelUpdate}>Editar</Text>
-                  <Image source={require("../../../assets/update.svg")} style={styles.imageButtonUpdate} />
+                  <Image
+                    source={require("../../../assets/update.svg")}
+                    style={styles.imageButtonUpdate}
+                  />
                 </TouchableOpacity>
               ) : (
-                <TouchableOpacity style={styles.buttonSave} onPress={handleSavePress}>
+                <TouchableOpacity
+                  style={styles.buttonSave}
+                  onPress={handleSavePress}
+                >
                   <Text style={styles.buttonLabelUpdate}>Salvar</Text>
-                  <Image source={require("../../../assets/save.png")} style={styles.imageButtonSave} />
+                  <Image
+                    source={require("../../../assets/save.png")}
+                    style={styles.imageButtonSave}
+                  />
                 </TouchableOpacity>
               )}
             </>
@@ -131,9 +174,9 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
           <View style={styles.dataContainer}>
             <View style={styles.row}>
               <View style={styles.inputContainer}>
-                <Text style={styles.labelInput}>Placa</Text>
+                <Text style={isEditable ? styles.labelInputEditable : styles.labelInput}>Placa</Text>
                 <TextInput
-                  style={styles.input}
+                  style={isEditable ? styles.inputEditable : styles.input}
                   value={licensePlate}
                   placeholderTextColor="rgba(255, 255, 255, 0.6)"
                   onChangeText={setLicensePlate}
@@ -141,9 +184,9 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
                 />
               </View>
               <View style={styles.inputContainer}>
-                <Text style={styles.labelInput}>Fabricante</Text>
+                <Text style={isEditable ? styles.labelInputEditable : styles.labelInput}>Fabricante</Text>
                 <TextInput
-                  style={styles.input}
+                  style={isEditable ? styles.inputEditable : styles.input}
                   placeholderTextColor="rgba(255, 255, 255, 0.6)"
                   value={manufacturer}
                   onChangeText={setManufacturer}
@@ -153,9 +196,9 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
             </View>
             <View style={styles.row}>
               <View style={styles.inputContainer}>
-                <Text style={styles.labelInput}>Cor</Text>
+                <Text style={isEditable ? styles.labelInputEditable : styles.labelInput}>Cor</Text>
                 <TextInput
-                  style={styles.input}
+                  style={isEditable ? styles.inputEditable : styles.input}
                   placeholderTextColor="rgba(255, 255, 255, 0.6)"
                   value={color}
                   onChangeText={setColor}
@@ -163,9 +206,9 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
                 />
               </View>
               <View style={styles.inputContainer}>
-                <Text style={styles.labelInput}>Modelo</Text>
+                <Text style={isEditable ? styles.labelInputEditable : styles.labelInput}>Modelo</Text>
                 <TextInput
-                  style={styles.input}
+                  style={isEditable ? styles.inputEditable : styles.input}
                   placeholderTextColor="rgba(255, 255, 255, 0.6)"
                   value={model}
                   onChangeText={setModel}
@@ -198,11 +241,17 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({ navigation, r
             <View style={styles.buttonContainer}>
               {!departureTimes && (
                 <>
-                  <TouchableOpacity style={[styles.button, styles.buttonDelete]} onPress={handleExitPress}>
+                  <TouchableOpacity
+                    style={[styles.button, styles.buttonDelete]}
+                    onPress={handleExitPress}
+                  >
                     <Text style={styles.buttonLabel}>Retirar</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={[styles.button, styles.buttonLiberar]} onPress={() => handleReleasePress(id, licensePlate)}>
+                  <TouchableOpacity
+                    style={[styles.button, styles.buttonLiberar]}
+                    onPress={() => handleReleasePress(id, licensePlate)}
+                  >
                     <Text style={styles.buttonLabel}>Liberar</Text>
                   </TouchableOpacity>
                 </>
@@ -224,8 +273,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   inputContainer: {
     flex: 1,
@@ -235,9 +284,15 @@ const styles = StyleSheet.create({
   },
   labelInput: {
     fontFamily: "Roboto-Regular",
-    position: 'absolute',
+    position: "absolute",
     top: -10,
     color: "rgba(255, 255, 255, 0.6)",
+  },
+  labelInputEditable: {
+    fontFamily: "Roboto-Regular",
+    position: "absolute",
+    top: -10,
+    color: "#fff",
   },
   input: {
     paddingVertical: 10,
@@ -246,8 +301,15 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255, 255, 255, 0.6)",
   },
+  inputEditable: {
+    paddingVertical: 10,
+    color: "#FFF",
+    fontFamily: "Jura-Medium",
+    borderBottomWidth: 1,
+    borderBottomColor: "#FFF",
+  },
   fullWidthInputContainer: {
-    width: '100%',
+    width: "100%",
     marginTop: 25,
     marginBottom: 25,
   },
@@ -255,24 +317,24 @@ const styles = StyleSheet.create({
     margin: 41,
   },
   buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   button: {
     height: 42,
     borderRadius: 8,
     flex: 1,
     marginHorizontal: 5,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   buttonLabel: {
     color: "#FFF",
-    fontFamily: 'Roboto-Medium',
+    fontFamily: "Roboto-Medium",
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: "500",
     lineHeight: 26,
     letterSpacing: 0.46,
-    textAlign: 'center',
+    textAlign: "center",
   },
   buttonLiberar: {
     backgroundColor: "#0393AE",
@@ -282,8 +344,8 @@ const styles = StyleSheet.create({
   },
   buttonUpdate: {
     padding: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     left: 47,
     width: 100,
     height: 37,
@@ -293,8 +355,8 @@ const styles = StyleSheet.create({
   },
   buttonSave: {
     padding: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
     left: 47,
     width: 100,
     height: 37,
@@ -304,12 +366,12 @@ const styles = StyleSheet.create({
   },
   buttonLabelUpdate: {
     color: "#FFF",
-    fontFamily: 'Roboto-Medium',
+    fontFamily: "Roboto-Medium",
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: "500",
     lineHeight: 26,
     letterSpacing: 0.46,
-    textAlign: 'center',
+    textAlign: "center",
   },
   imageButtonUpdate: {
     width: 20,

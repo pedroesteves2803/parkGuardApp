@@ -6,6 +6,7 @@ import UpdateVehicleScreen from '../screens/Vehicle/UpdateVehicleScreen';
 import RegisterPaymentScreen from '../screens/Payment/RegisterPaymentScreen';
 import ReleasePaymentScreen from '../screens/Payment/ReleasePaymentScreen';
 import { PaymentData } from '../services/paymentService';
+import ListEmployeesScreen from '../screens/Employee/ListEmployeesScreen';
 
 export type AppStackParamList = {
   Home: undefined;
@@ -13,6 +14,7 @@ export type AppStackParamList = {
   UpdateVehicle: { id: number };
   RegisterPayment: { id: number, licensePlate: string};
   ReleasePayment: { paymentData: PaymentData, licensePlate: string };
+  ListEmployees: undefined;
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -25,6 +27,7 @@ const MainStack: React.FC = () => {
       <Stack.Screen name="UpdateVehicle" component={UpdateVehicleScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="RegisterPayment" component={RegisterPaymentScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="ReleasePayment" component={ReleasePaymentScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name="ListEmployees" component={ListEmployeesScreen} options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 }

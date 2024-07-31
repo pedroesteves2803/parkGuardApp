@@ -12,7 +12,8 @@ const HomeNavbarComponent: React.FC<NavBarComponentProps> = ({ navigation }) => 
   return (
     <View style={styles.navBar}>
         <ButtonImageComponent 
-          image={require("../../../../assets/cart.png")} label="Registrar Veículo"
+          image={require("../../../../assets/cart.png")} 
+          label="Registrar Veículo"
           onPress={() => navigation.navigate('RegisterVehicle')}
         />
         <ButtonImageComponent 
@@ -21,7 +22,8 @@ const HomeNavbarComponent: React.FC<NavBarComponentProps> = ({ navigation }) => 
         />
         <ButtonImageComponent 
           image={require("../../../../assets/user-add.png")} 
-          label="Cadastrar Funcionário"
+          label="Lista de Funcionários"
+          onPress={() => navigation.navigate('ListEmployees')}
         />
     </View>
   );

@@ -8,7 +8,7 @@ export interface CartData {
     departureTimes: string;
 }
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'http://127.0.0.1:8000/api';
 
 export async function getVehicles(token: string): Promise<CartData[]> {
     try {
@@ -124,12 +124,14 @@ export async function updateVehicle(
     licensePlate?: string,
 ): Promise<CartData> {
     try {
-        const requestBody: any = {};
+        const requestBody: any = {
+            manufacturer: manufacturer === '' ? null : manufacturer,
+            color: color === '' ? null : color,
+            model: model === '' ? null : model,
+            licensePlate: licensePlate === '' ? null : licensePlate,
+        };
 
-        if (manufacturer) requestBody.manufacturer = manufacturer;
-        if (color) requestBody.color = color;
-        if (model) requestBody.model = model;
-        if (licensePlate) requestBody.licensePlate = licensePlate;
+        console.log(requestBody)
 
         const response = await fetch(`${apiUrl}/vehicle/${id}`, {
             method: 'PUT',
@@ -143,8 +145,10 @@ export async function updateVehicle(
         if (!response.ok) {
             throw new Error(`Erro na requisição (updateVehicle): ${response.status} ${response.statusText}`);
         }
+        
 
         const responseData = await response.json();
+
 
         if (!responseData.data.status) {
             throw new Error(responseData.data.errors[0].message || 'Erro ao atualizar veiculo!');
