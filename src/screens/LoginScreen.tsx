@@ -8,6 +8,7 @@ import LoginInputComponent from '../components/Login/Forms/LoginInputComponent';
 import ButtonComponent from '../components/Shared/Forms/ButtonComponent';
 import LoginWavesComponent from '../components/Login/Footer/LoginWavesComponent';
 
+
 interface LoginScreenProps {
   navigation: any;
 }
@@ -55,7 +56,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       </View>
 
       <View style={styles.inputContainer}>
-        <LoginInputComponent label="E-mail" placeholder="email@gmail.com" onValueChange={setEmail} />
+        <LoginInputComponent label="E-mail" placeholder="email@gmail.com" onValueChange={setEmail}/>
         <LoginInputComponent 
           label="Senha" 
           placeholder="Insira sua senha" 
@@ -126,10 +127,11 @@ const styles = StyleSheet.create({
     letterSpacing: 0,
   },
   inputContainer: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    top: Platform.OS === 'ios' ? 0 : 50,
+    top: Platform.OS === 'ios' ? 380 : 380,
+    position: "absolute",
+    width: '100%',
   },
   error: {
     color: 'red',

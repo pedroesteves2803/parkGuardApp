@@ -1,13 +1,14 @@
 import React from 'react';
-import { StyleSheet, Image, Dimensions } from 'react-native';
+import { StyleSheet, Image, Dimensions, Platform } from 'react-native';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const { width: windowWidth, height: windowHeight } = Dimensions.get('window') || { width: 0, height: 0 };
+
+const topPosition = windowHeight * (Platform.OS === 'ios' ? 0.78 : 0.83);
 
 const LoginWavesComponent: React.FC = () => {
     return (
         <Image
-            style={styles.wavesFooter}
+            style={[styles.wavesFooter, { top: topPosition }]}
             resizeMode="cover"
             source={require("../../../../assets/waves.png")}
         />
@@ -19,7 +20,6 @@ const styles = StyleSheet.create({
         width: windowWidth,
         height: windowHeight * 0.2,
         position: "absolute",
-        bottom: 0,
     },
 });
 

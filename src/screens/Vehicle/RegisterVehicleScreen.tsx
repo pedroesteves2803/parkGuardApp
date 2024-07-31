@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import * as ImagePicker from 'expo-image-picker';
@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     fontFamily: 'Inter-Regular',
-    fontWeight: 400,
+    fontWeight: Platform.OS === 'ios' ? '400' : 'normal',
     lineHeight: 16,
     textAlign: 'center',
     color: "#BCBCBC"
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 10,
     fontFamily: 'Inter-Regular',
-    fontWeight: 400,
+    fontWeight: Platform.OS === 'ios' ? '400' : 'normal',
     lineHeight: 14,
     textAlign: 'center',
     color: "#838383"
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     color: "#FFF",
     fontFamily: 'Roboto-Medium',
     fontSize: 15,
-    fontWeight: 500,
+    fontWeight: Platform.OS === 'ios' ? '500' : 'bold',
     lineHeight: 26,
     letterSpacing: 0.46000000834465027,
     textAlign: 'center',

@@ -8,7 +8,7 @@ export interface PaymentData {
     vehicle_id: number;
 }
 
-const apiUrl = 'http://127.0.0.1:8000/api';
+const apiUrl = 'http://192.168.1.124/api';
 
 export async function createPayment(token: string, vehicleId: number, paymentMethod: string): Promise<PaymentData> {
     try {

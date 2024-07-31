@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, Platform } from 'react-native';
 import { NativeStackScreenProps } from 'react-native-screens/lib/typescript/native-stack/types';
 import { useAuth } from '../../contexts/AuthContext';
 import { AppStackParamList } from '../../navigation/MainStack';
@@ -25,28 +25,28 @@ const RegisterPaymentScreen: React.FC<RegisterPaymentScreenProps> = ({ navigatio
             if (paymentMethod === '') {
                 setError('Preencha os campos para continuar.');
                 return;
-            }     
-            setLoading(true)
+            }
+            setLoading(true);
             const response = await createPayment(authData?.token || '', id, paymentMethod);
             setSuccess(`Pagamento criado!`);
-            setLoading(false)
+            setLoading(false);
             navigation.navigate('ReleasePayment', { paymentData: response, licensePlate });
         } catch (error) {
-          if (error instanceof Error) {
-            setError(error.message);
-          } else {
-            setError('Ocorreu um erro desconhecido.');
-          }
-          setLoading(false)
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError('Ocorreu um erro desconhecido.');
+            }
+            setLoading(false);
         }
     };
 
     return (
         <View style={styles.container}>
-             <AlertErrorModal visible={!!error} onClose={() => setError('')} message={error} />
-             <AlertSuccessModal visible={!!success} onClose={() => setSuccess('')} message={success} />
+            <AlertErrorModal visible={!!error} onClose={() => setError('')} message={error} />
+            <AlertSuccessModal visible={!!success} onClose={() => setSuccess('')} message={success} />
 
-             <HeaderComponent
+            <HeaderComponent
                 title="Liberação do Veículo"
                 subtitle="Selecione a forma de pagamento para liberar o veículo."
                 onPress={() => navigation.navigate('Home')}
@@ -55,16 +55,18 @@ const RegisterPaymentScreen: React.FC<RegisterPaymentScreenProps> = ({ navigatio
             <View style={styles.dataContainer}>
                 <View style={styles.inputContainer}>
                     <Text style={styles.labelInput}>Tipo de Pagamento</Text>
-                    <Picker
-                        selectedValue={paymentMethod}
-                        onValueChange={(itemValue) => setPaymentMethod(itemValue)}
-                        style={styles.picker}
-                        prompt="Selecione um método de pagamento"
-                    >
-                        <Picker.Item color='#000'label="Cartão de Débito" value="1" />
-                        <Picker.Item color='#000' label="Cartão de Crédito" value="2" />
-                        <Picker.Item color='#000' label="Pix" value="3" />
-                    </Picker>
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={paymentMethod}
+                            onValueChange={(itemValue) => setPaymentMethod(itemValue)}
+                            style={styles.picker}
+                            prompt="Selecione um método de pagamento"
+                        >
+                            <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Cartão de Débito" value="1" />
+                            <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Cartão de Crédito" value="2" />
+                            <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Pix" value="3" />
+                        </Picker>
+                    </View>
                 </View>
 
                 <View style={styles.inputContainer}>
@@ -83,7 +85,7 @@ const RegisterPaymentScreen: React.FC<RegisterPaymentScreenProps> = ({ navigatio
 
                 {!loading && (
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={[styles.button]} onPress={handleCreatePayment}>
+                        <TouchableOpacity style={styles.button} onPress={handleCreatePayment}>
                             <Text style={styles.buttonLabel}>Salvar</Text>
                         </TouchableOpacity>
                     </View>
@@ -134,7 +136,6 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         justifyContent: 'center',
         backgroundColor: "#0393AE",
-
     },
     buttonLabel: {
         color: "#FFF",
@@ -145,13 +146,13 @@ const styles = StyleSheet.create({
         letterSpacing: 0.46,
         textAlign: 'center',
     },
-    picker: {
-        height: 50,
-        backgroundColor: "transparent",
-        fontFamily: "Jura-Medium",
-        borderWidth: 0, 
+    pickerContainer: {
         borderBottomWidth: 1,
         borderBottomColor: "rgba(255, 255, 255, 0.6)",
+        width: '100%', 
+    },
+    picker: {
+        height: Platform.select({ ios: 190, android: 50 }),
         color: "rgba(255, 255, 255, 0.6)",
     },
 });
