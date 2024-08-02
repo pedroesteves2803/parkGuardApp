@@ -2,11 +2,10 @@ export interface EmployeeData {
     id: number;
     name: string;
     email: string;
-    type: string;
-
+    type: number;
 }
 
-const apiUrl = 'http://127.0.0.1:8000/api';
+const apiUrl = 'http://192.168.1.124/api';
 
 export async function getEmployees(token: string): Promise<EmployeeData[]> {
     try {
@@ -24,11 +23,13 @@ export async function getEmployees(token: string): Promise<EmployeeData[]> {
 
         const responseData = await response.json();
 
+        console.log(responseData.data.employees);
+
         if (!responseData.data.status) {
             throw new Error(responseData.data.errors[0].message || 'Erro ao obter funcionários');
         }
 
-        return responseData.data.vehicles;
+        return responseData.data.employees;
     } catch (error) {
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");

@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 type Props = {
-  initialSegment: 'Atuais' | 'Desligados';
-  onSegmentChange: (segment: 'Atuais' | 'Desligados') => void;
+  initialSegment: 'Administrador' | 'Normal';
+  onSegmentChange: (segment: 'Administrador' | 'Normal') => void;
 };
 
 const EmployeeStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegmentChange }) => {
@@ -13,32 +13,36 @@ const EmployeeStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSeg
     setSelectedSegment(initialSegment);
   }, [initialSegment]);
 
-  const handleSegmentPress = (segment: 'Atuais' | 'Desligados') => {
+  const handleSegmentPress = (segment: 'Administrador' | 'Normal') => {
     if (segment !== selectedSegment) {
       setSelectedSegment(segment);
       onSegmentChange(segment);
     }
   };
 
+  const handleCreateEmployee = () => {
+    console.log('Create employee');
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.segment, selectedSegment === 'Atuais' && styles.selectedSegment]}
-        onPress={() => handleSegmentPress('Atuais')}
+        style={[styles.segment, selectedSegment === 'Administrador' && styles.selectedSegment]}
+        onPress={() => handleSegmentPress('Administrador')}
       >
-        <Text style={[styles.segmentText, selectedSegment === 'Atuais' && styles.selectedText]}>Atuais</Text>
+        <Text style={[styles.segmentText, selectedSegment === 'Administrador' && styles.selectedText]}>Administrador</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={[styles.segment, selectedSegment === 'Desligados' && styles.selectedSegment]}
-        onPress={() => handleSegmentPress('Desligados')}
+        style={[styles.segment, selectedSegment === 'Normal' && styles.selectedSegment]}
+        onPress={() => handleSegmentPress('Normal')}
       >
-        <Text style={[styles.segmentText, selectedSegment === 'Desligados' && styles.selectedText]}>Desligados</Text>
+        <Text style={[styles.segmentText, selectedSegment === 'Normal' && styles.selectedText]}>Normal</Text>
       </TouchableOpacity>
 
-      {/* <TouchableOpacity style={styles.filters} onPress={() => handleSegmentPress('Atuais')}>
-        <Image source={require("../../../../assets/filter.png")} style={styles.filterImage} />
-      </TouchableOpacity> */}
+      <TouchableOpacity style={styles.filters} onPress={() => handleCreateEmployee()}>
+        <Image source={require("../../../../assets/user-add.png")} style={styles.AddEmployeeImage} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -71,9 +75,9 @@ const styles = StyleSheet.create({
   filters: {
     marginLeft: 'auto',
   },
-  filterImage: {
-    width: 24,
-    height: 24,
+  AddEmployeeImage: {
+    width: 20,
+    height: 20,
     resizeMode: 'contain',
   },
 });

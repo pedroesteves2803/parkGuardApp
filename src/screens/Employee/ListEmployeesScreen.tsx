@@ -7,26 +7,29 @@ import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
 import HeaderComponent from '../../components/Shared/Header/HeaderComponent';
 import { createPayment } from '../../services/paymentService';
-import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
-import { Picker } from '@react-native-picker/picker';
-import VehicleStatusSegmentedControl from '../../components/Home/Controls/VehicleStatusSegmentedControl';
 import EmployeeStatusSegmentedControl from '../../components/ListEmployee/Controls/VehicleStatusSegmentedControl';
+import EmployeeListComponent from '../../components/ListEmployee/Table/EmployeeListComponent';
+import useFetchEmployees from '../../hooks/useFetchEmployees';
 
 type ListEmployeesScreenProps = NativeStackScreenProps<AppStackParamList, 'ListEmployees'>;
 
 const ListEmployeesScreen: React.FC<ListEmployeesScreenProps> = ({ navigation }) => {
-    // const { id, licensePlate } = route.params;
     const { authData } = useAuth();
     const [success, setSuccess] = useState<string>('');
     const [error, setError] = useState<string>('');
     const [paymentMethod, setPaymentMethod] = useState('');
-    const [loading, setLoading] = useState<boolean>(false);
-    const [currentSegment, setCurrentSegment] = useState<'Atuais' | 'Desligados'>('Atuais');
+    const [currentSegment, setCurrentSegment] = useState<'Administrador' | 'Normal'>('Administrador');
+    const { employees, loading, refetch } = useFetchEmployees(
+        authData?.token || ""
+    );
 
-    const handleSegmentChange = (segment: 'Atuais' | 'Desligados') => {
+    const handleSegmentChange = (segment: 'Administrador' | 'Normal') => {
         setCurrentSegment(segment);
-      };
+    };
 
+    const filteredEmployees = currentSegment === 'Administrador'
+        ? employees.filter(employee => employee.type === 1)
+        : employees.filter(employee => employee.type === 2);
 
     return (
         <View style={styles.container}>
@@ -41,6 +44,10 @@ const ListEmployeesScreen: React.FC<ListEmployeesScreenProps> = ({ navigation })
                 />
 
                 <EmployeeStatusSegmentedControl initialSegment={currentSegment} onSegmentChange={handleSegmentChange} />
+
+                {!error && (
+                    <EmployeeListComponent employees={filteredEmployees} navigation={navigation} />
+                )}
 
             </View>
         </View>
