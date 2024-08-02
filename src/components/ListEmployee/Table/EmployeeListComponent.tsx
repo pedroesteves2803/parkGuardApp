@@ -17,7 +17,7 @@ interface EmployeeListProps {
 const EmployeeListComponent: React.FC<EmployeeListProps> = ({ employees, navigation }) => {
 
   const handleGetEmployeeById = (id: number) => {
-    console.log(id)
+    navigation.navigate('UpdateEmployee',  { id });
   };
 
   const renderItem = ({ item }: { item: Employee }) => (

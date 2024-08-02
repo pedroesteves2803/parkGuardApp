@@ -131,8 +131,6 @@ export async function updateVehicle(
             licensePlate: licensePlate === '' ? null : licensePlate,
         };
 
-        console.log(requestBody)
-
         const response = await fetch(`${apiUrl}/vehicle/${id}`, {
             method: 'PUT',
             headers: {

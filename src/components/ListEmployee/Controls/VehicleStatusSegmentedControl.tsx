@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useAuth } from '../../../contexts/AuthContext';
 
 type Props = {
   initialSegment: 'Administrador' | 'Normal';
   onSegmentChange: (segment: 'Administrador' | 'Normal') => void;
+  navigation: any;
 };
 
-const EmployeeStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegmentChange }) => {
+const EmployeeStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSegmentChange, navigation }) => {
   const [selectedSegment, setSelectedSegment] = React.useState(initialSegment);
+  const { authData } = useAuth();
 
   useEffect(() => {
     setSelectedSegment(initialSegment);
@@ -21,7 +24,7 @@ const EmployeeStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSeg
   };
 
   const handleCreateEmployee = () => {
-    console.log('Create employee');
+    navigation.navigate('CreateEmployee');
   }
 
   return (
@@ -40,9 +43,11 @@ const EmployeeStatusSegmentedControl: React.FC<Props> = ({ initialSegment, onSeg
         <Text style={[styles.segmentText, selectedSegment === 'Normal' && styles.selectedText]}>Normal</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.filters} onPress={() => handleCreateEmployee()}>
-        <Image source={require("../../../../assets/user-add.png")} style={styles.AddEmployeeImage} />
-      </TouchableOpacity>
+      {Number(authData?.type) === 1 && (
+        <TouchableOpacity style={styles.filters} onPress={() => handleCreateEmployee()}>
+          <Image source={require("../../../../assets/user-add.png")} style={styles.AddEmployeeImage} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

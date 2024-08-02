@@ -123,7 +123,6 @@ const RegisterVehicleScreen: React.FC = () => {
             <AlertErrorModal visible={!!error} onClose={() => setError('')} message={error} />
             <AlertSuccessModal visible={!!success} onClose={() => setSuccess('')} message={success} />
             
-
             <HeaderComponent
               title="Registro de veículo" 
               subtitle="Capture uma foto ou digite a placa para salvar o registro" 

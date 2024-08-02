@@ -141,9 +141,6 @@ const ReleasePaymentScreen: React.FC<ReleasePaymentScreenProps> = ({ navigation,
                     />
                 </View>
 
-
-
-
                 {loading && (
                   <LoadingComponent />
                 )}

@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
-import { CartData, getVehicleById } from '../services/vehicleService';
-import { EmployeeData, getEmployees } from '../services/employeeService';
+import { EmployeeData, getEmployeeById } from '../services/employeeService';
 
-const useFetchEmployees = (token: string) => {
-  const [employees, setEmployees] = useState<EmployeeData[]>([]);
+const useFetchEmployeeById = (token: string, id: number) => {
+  const [employee, setEmployee] = useState<EmployeeData>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
-      const employeesData = await getEmployees(token);
-      setEmployees(employeesData);
+      const EmployeeData = await getEmployeeById(token, id);
+      setEmployee(EmployeeData);
     } catch (error) {
       if (error instanceof Error) {
         setError(error.message);
@@ -31,7 +30,7 @@ const useFetchEmployees = (token: string) => {
     fetchData();
   };
 
-  return { employees, loading, error, refetch };
+  return { employee, loading, error, refetch };
 };
 
-export default useFetchEmployees;
+export default useFetchEmployeeById;

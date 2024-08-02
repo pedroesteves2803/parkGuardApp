@@ -70,7 +70,6 @@ const UpdateVehicleScreen: React.FC<UpdateVehicleScreenProps> = ({
 
   const handleEditPress = () => {
     setIsEditable(true);
-
   };
 
   const handleSavePress = async () => {
