@@ -68,8 +68,6 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
     };
     
     useEffect(() => {
-        console.log(employee);
-
         if (employee) {
             setName(employee.name);
             setEmail(employee.email);
@@ -105,7 +103,7 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
                         placeholderTextColor="rgba(255, 255, 255, 0.6)"
                         value={name}
                         onChangeText={setName}
-                        editable={false}
+                        editable={isEditable}
                     />
                 </View>
 
@@ -117,7 +115,7 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
                         placeholderTextColor="rgba(255, 255, 255, 0.6)"
                         value={email}
                         onChangeText={setEmail}
-                        editable={false}
+                        editable={isEditable}
                     />
                 </View>
 
@@ -134,12 +132,15 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
                 </View>
 
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                        style={[styles.button, styles.buttonDelete]}
-                        onPress={() => {}}
-                    >
-                        <Text style={styles.buttonLabel}>Excluir</Text>
-                    </TouchableOpacity>
+
+                    {Number(authData?.type) === 1 && (
+                        <TouchableOpacity
+                            style={[styles.button, styles.buttonDelete]}
+                            onPress={() => {}}
+                        >
+                            <Text style={styles.buttonLabel}>Excluir</Text>
+                        </TouchableOpacity>
+                    )}
 
                     {!isEditable ? (
                         <TouchableOpacity

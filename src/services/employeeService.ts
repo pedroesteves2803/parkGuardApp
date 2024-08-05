@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export interface EmployeeData {
     id: number;
     name: string;
@@ -6,7 +8,7 @@ export interface EmployeeData {
     type: number;
 }
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'http://127.0.0.1:8000/api';
 
 export async function getEmployees(token: string): Promise<EmployeeData[]> {
     try {
@@ -102,11 +104,8 @@ export async function updateEmployee(
         const requestBody: any = {
             name: name,
             email: email,
-            password: password,
             type: type,
         };
-
-        console.log(requestBody);
 
         const response = await fetch(`${apiUrl}/employee/${id}`, {
             method: 'PUT',
@@ -123,15 +122,12 @@ export async function updateEmployee(
 
         const responseData = await response.json();
 
-        console.log(responseData)
-
         if (!responseData.data.status) {
             throw new Error(responseData.data.errors[0].message || 'Erro ao atualizar funcionário');
         }
 
         return responseData.data.employee;
     } catch (error) {
-        console.log(error)
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");
         } else {
@@ -164,7 +160,7 @@ export async function getEmployeeById(token: string, id: number): Promise<Employ
             throw new Error(responseData.data.errors[0].message || 'Erro ao obter funcionário');
         }
 
-return responseData.data.employee;
+        return responseData.data.employee;
     } catch (error) {
         if (error instanceof TypeError && error.message === 'Network request failed') {
             throw new Error("Algo deu errado, tente novamente mais tarde!");
