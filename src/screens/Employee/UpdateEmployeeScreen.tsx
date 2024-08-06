@@ -6,14 +6,9 @@ import { AppStackParamList } from '../../navigation/MainStack';
 import AlertErrorModal from '../../components/Shared/Modals/AlertErrorModal';
 import AlertSuccessModal from '../../components/Shared/Modals/AlertSuccessModal';
 import HeaderComponent from '../../components/Shared/Header/HeaderComponent';
-import EmployeeStatusSegmentedControl from '../../components/ListEmployee/Controls/VehicleStatusSegmentedControl';
-import EmployeeListComponent from '../../components/ListEmployee/Table/EmployeeListComponent';
-import useFetchEmployees from '../../hooks/useFetchEmployees';
-import InputComponent from '../../components/Shared/Forms/InputComponent';
-import ButtonComponent from '../../components/Shared/Forms/ButtonComponent';
 import { LoadingComponent } from '../../components/Shared/Loading/LoadingErrorComponents';
 import { Picker } from '@react-native-picker/picker';
-import {updateEmployee } from '../../services/employeeService';
+import {deleteById, updateEmployee } from '../../services/employeeService';
 import useFetchEmployeeById from '../../hooks/useFetchEmployeeById';
 
 type UpdateEmployeeScreenProps = NativeStackScreenProps<AppStackParamList, 'UpdateEmployee'>;
@@ -66,6 +61,16 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
         setSuccess('Funcionário atualizado com sucesso.');
         navigation.navigate('ListEmployees');
     };
+
+    const handleDeletePress = async () => {
+        setLoading(true);
+
+        await deleteById(authData?.token || '', id);
+
+        setLoading(false);
+        setSuccess('Funcionário removido com sucesso.');
+        navigation.navigate('ListEmployees');
+    };
     
     useEffect(() => {
         if (employee) {
@@ -98,7 +103,7 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
                 <View style={styles.fullWidthInputContainer}>
                     <Text style={styles.labelInput}>Nome</Text>
                     <TextInput
-                        style={styles.input}
+                        style={isEditable ? styles.inputEditable : styles.input}
                         placeholder="Digite seu nome"
                         placeholderTextColor="rgba(255, 255, 255, 0.6)"
                         value={name}
@@ -110,7 +115,7 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
                 <View style={styles.fullWidthInputContainer}>
                     <Text style={styles.labelInput}>Email</Text>
                     <TextInput
-                        style={styles.input}
+                        style={isEditable ? styles.inputEditable : styles.input}
                         placeholder="Digite seu email"
                         placeholderTextColor="rgba(255, 255, 255, 0.6)"
                         value={email}
@@ -119,44 +124,77 @@ const UpdateEmployeeScreen: React.FC<UpdateEmployeeScreenProps> = ({
                     />
                 </View>
 
-                <View style={styles.pickerContainer}>
-                    <Picker
-                        selectedValue={type}
-                        onValueChange={(itemValue) => setType(itemValue)}
-                        style={styles.picker}
-                        prompt="Selecione o tipo de funcionário"
-                    >
-                        <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Administrador" value={1} />
-                        <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Normal" value={2} />
-                    </Picker>
-                </View>
+                {!isEditable ? (
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={type}
+                            onValueChange={(itemValue) => setType(itemValue)}
+                            style={styles.picker}
+                            prompt="Selecione o tipo de funcionário"
+                        >
+                            { type == 1 ? (
+                                <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Administrador" value={1} />
+
+                            ) : (
+                                <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Normal" value={2} />
+                            )}
+
+                        </Picker>
+                    </View>
+                ) : (
+                    <View style={styles.pickerContainer}>
+                        <Picker
+                            selectedValue={type}
+                            onValueChange={(itemValue) => setType(itemValue)}
+                            style={styles.picker}
+                            prompt="Selecione o tipo de funcionário"
+                        >
+                            <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Administrador" value={1} />
+                            <Picker.Item color={Platform.select({ ios: '#fff', android: '#000' })} label="Normal" value={2} />
+                        </Picker>
+                    </View>
+                )}
 
                 <View style={styles.buttonContainer}>
 
-                    {Number(authData?.type) === 1 && (
-                        <TouchableOpacity
-                            style={[styles.button, styles.buttonDelete]}
-                            onPress={() => {}}
-                        >
-                            <Text style={styles.buttonLabel}>Excluir</Text>
-                        </TouchableOpacity>
+                    {loading && (
+                        <LoadingComponent />
                     )}
 
-                    {!isEditable ? (
-                        <TouchableOpacity
-                            style={[styles.button, styles.buttonEdit]}
-                            onPress={() => handleEditPress()}
-                        >
-                            <Text style={styles.buttonLabel}>Editar</Text>
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity
-                            style={[styles.button, styles.buttonSave]}
-                            onPress={handleSavePress}
-                        >
-                            <Text style={styles.buttonLabel}>Salvar</Text>
-                        </TouchableOpacity>
+                    {!loading && (
+                        <>
+                            {Number(authData?.type) === 1 && (
+                                <TouchableOpacity
+                                    style={[styles.button, styles.buttonDelete]}
+                                    onPress={handleDeletePress}
+                                >
+                                    <Text style={styles.buttonLabel}>Excluir</Text>
+                                </TouchableOpacity>
+                            )}
+                        </>
                     )}
+
+                    {!loading && (
+                        <>
+                            {!isEditable ? (
+                                <TouchableOpacity
+                                    style={[styles.button, styles.buttonEdit]}
+                                    onPress={() => handleEditPress()}
+                                >
+                                    <Text style={styles.buttonLabel}>Editar</Text>
+                                </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity
+                                    style={[styles.button, styles.buttonSave]}
+                                    onPress={handleSavePress}
+                                >
+                                    <Text style={styles.buttonLabel}>Salvar</Text>
+                                </TouchableOpacity>
+                            )}
+                        </>
+                    )}
+
+
                 </View>
             </View>
         </View>

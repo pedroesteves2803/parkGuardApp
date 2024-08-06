@@ -8,7 +8,7 @@ export interface EmployeeData {
     type: number;
 }
 
-const apiUrl = 'http://127.0.0.1:8000/api';
+const apiUrl = 'http://192.168.1.124/api';
 
 export async function getEmployees(token: string): Promise<EmployeeData[]> {
     try {
@@ -174,4 +174,38 @@ export async function getEmployeeById(token: string, id: number): Promise<Employ
     }
 }
 
-export const employeeService = { getEmployees, createEmployee, updateEmployee,  getEmployeeById };
+export async function deleteById(token: string, id: number): Promise<EmployeeData> {
+    try {
+        const response = await fetch(`${apiUrl}/employee/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Erro na requisição (deleteById): ${response.status} ${response.statusText}`);
+        }
+
+        const responseData = await response.json();
+
+        if (!responseData.data.status) {
+            throw new Error(responseData.data.errors[0].message || 'Erro ao deletar funcionário');
+        }
+
+        return responseData.data.employee;
+    } catch (error) {
+        if (error instanceof TypeError && error.message === 'Network request failed') {
+            throw new Error("Algo deu errado, tente novamente mais tarde!");
+        } else {
+            if (error instanceof Error) {
+                throw new Error(error.message);
+            } else {
+                throw new Error('Ocorreu um erro desconhecido.');
+            }
+        }
+    }
+}
+
+export const employeeService = { getEmployees, createEmployee, updateEmployee,  getEmployeeById, deleteById };

@@ -16,10 +16,10 @@ const HomeNavbarComponent: React.FC<NavBarComponentProps> = ({ navigation }) => 
           label="Registrar Veículo"
           onPress={() => navigation.navigate('RegisterVehicle')}
         />
-        <ButtonImageComponent 
+        {/* <ButtonImageComponent 
           image={require("../../../../assets/file.png")} 
           label="Relatório Mensal"
-        />
+        /> */}
         <ButtonImageComponent 
           image={require("../../../../assets/user-add.png")} 
           label="Lista de Funcionários"
@@ -32,7 +32,7 @@ const HomeNavbarComponent: React.FC<NavBarComponentProps> = ({ navigation }) => 
 const styles = StyleSheet.create({
       navBar: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
         paddingVertical: 10,
       },
 });
