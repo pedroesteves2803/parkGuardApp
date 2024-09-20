@@ -39,18 +39,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    loadFromStorage();
-  }, []) 
+    resetAuthData(); 
+  }, []);
 
-  async function loadFromStorage(){
-    const auth = await AsyncStorage.getItem("@AuthData")
-
-    if(auth) {
-      setAuth(JSON.parse(auth) as AuthData);
+  async function resetAuthData() {
+    try {
+      await AsyncStorage.removeItem('@AuthData');
+      setAuth(undefined); 
+      loadFromStorage();
+    } catch (error) {
+      setErrorMessage('Erro ao resetar dados de autenticação.');
     }
-
-    setLoading(false)
   }
+
+   async function loadFromStorage() {
+    try {
+      const auth = await AsyncStorage.getItem('@AuthData');
+      if (auth) {
+        setAuth(JSON.parse(auth) as AuthData);
+      }
+      setLoading(false);
+    } catch (error) {
+      setErrorMessage('Erro ao carregar dados de autenticação.');
+    }
+  }
+
 
   async function signIn(email: string, password: string) {
     try {

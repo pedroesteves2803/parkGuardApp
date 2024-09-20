@@ -3,7 +3,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import VerifyTokenPasswordResetScreen from '../screens/VerifyTokenPasswordResetScreen';
-import { verifyTokenResetPassword } from '../services/authService';
 import ResetPasswordUpdateScreen from '../screens/ResetPasswordUpdateScreen';
 
 export type AuthStackParamList = {
