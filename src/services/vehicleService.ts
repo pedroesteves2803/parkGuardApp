@@ -8,7 +8,7 @@ export interface CartData {
     departureTimes: string;
 }
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'https://parkguardapi.fly.dev/api';
 
 export async function getVehicles(token: string): Promise<CartData[]> {
     try {

@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 
-const plateDetectionUrl = 'http://localhost:8282';
+const plateDetectionUrl = 'https://parkguardmicroservice.fly.dev';
 
 export async function detectPlace(token: string, imageUri: string): Promise<string> {
     try {
@@ -23,11 +23,13 @@ export async function detectPlace(token: string, imageUri: string): Promise<stri
             body: formData,
         });
 
+
         if (!response.ok) { 
             throw new Error(`Erro na requisição (detectPlace): ${response.status} ${response.statusText}`);
         }
 
         const responseData = await response.json();
+        console.log(response.ok, response.status, responseData);
 
         if(responseData.error){
 

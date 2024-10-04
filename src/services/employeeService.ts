@@ -8,7 +8,7 @@ export interface EmployeeData {
     type: number;
 }
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'https://parkguardapi.fly.dev/api';
 
 export async function getEmployees(token: string): Promise<EmployeeData[]> {
     try {

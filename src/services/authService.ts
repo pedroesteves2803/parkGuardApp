@@ -1,6 +1,6 @@
 import { AuthData, tokenReset } from "../contexts/AuthContext";
 
-const apiUrl = 'http://192.168.1.124/api';
+const apiUrl = 'https://parkguardapi.fly.dev/api';
 
 export async function signIn(email: string, password: string): Promise<AuthData> {
     try {

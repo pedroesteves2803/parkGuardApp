@@ -7,7 +7,7 @@ import AlertErrorModal from '../components/Shared/Modals/AlertErrorModal';
 import LoginInputComponent from '../components/Login/Forms/LoginInputComponent';
 import ButtonComponent from '../components/Shared/Forms/ButtonComponent';
 import LoginWavesComponent from '../components/Login/Footer/LoginWavesComponent';
-
+import { LoadingComponent } from '../components/Shared/Loading/LoadingErrorComponents';
 
 interface LoginScreenProps {
   navigation: any;
@@ -18,31 +18,34 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [inputEmpty, setInputEmpty] = useState('');
+  const [loading, setLoading] = useState(false); // Estado para controle de loading
   
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
+    return emailRegex.test(email);
   };
 
   const handleSignIn = async () => {
     if (email === '' || password === '') {
       setInputEmpty('Preencha os campos para continuar.');
       return;
-    }    
-
-    if (!validateEmail(email)) {
-        setInputEmpty('Por favor, insira um email válido.');
-        return;
     }
 
+    if (!validateEmail(email)) {
+      setInputEmpty('Por favor, insira um email válido.');
+      return;
+    }
+
+    setLoading(true); // Inicia o carregamento
     await signIn(email, password);
+    setLoading(false); // Finaliza o carregamento
   };
 
   return (
-    <View style={styles.loginContainer} >
-     <AlertErrorModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
-     <AlertErrorModal visible={!!inputEmpty} onClose={() => setInputEmpty('')}  message={inputEmpty} />
-      
+    <View style={styles.loginContainer}>
+      <AlertErrorModal visible={!!errorMessage} onClose={() => setErrorMessage('')} title="Algo deu errado!" message={errorMessage} />
+      <AlertErrorModal visible={!!inputEmpty} onClose={() => setInputEmpty('')} message={inputEmpty} />
+
       <Image
         style={styles.logoIcon}
         contentFit="cover"
@@ -56,7 +59,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
       </View>
 
       <View style={styles.inputContainer}>
-        <LoginInputComponent label="E-mail" placeholder="email@gmail.com" onValueChange={setEmail}/>
+        <LoginInputComponent label="E-mail" placeholder="email@gmail.com" onValueChange={setEmail} />
         <LoginInputComponent 
           label="Senha" 
           placeholder="Insira sua senha" 
@@ -66,12 +69,17 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         />            
       </View>
 
-      <ButtonComponent label="LOGIN" onPress={handleSignIn} />
+      {loading ? (
+        <LoadingComponent />
+      ) : (
+        <ButtonComponent label="LOGIN" onPress={handleSignIn} />
+      )}
+
       <LoginWavesComponent />
       <StatusBar style="auto" />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   loginContainer: {
