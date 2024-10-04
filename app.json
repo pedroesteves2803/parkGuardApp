@@ -12,16 +12,23 @@
       "backgroundColor": "#1E1E1E"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.pedrooesteves.parkGuardApp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#E1E1E1"
-      }
+      },
+      "package": "com.pedrooesteves.parkGuardApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "1c31a1fc-4990-41ea-8708-e0558ac1487d"
+      }
     }
   }
 }
