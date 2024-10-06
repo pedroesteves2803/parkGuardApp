@@ -19,7 +19,8 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [inputEmpty, setInputEmpty] = useState('');
   const [loading, setLoading] = useState(false); // Estado para controle de loading
-  
+  const type = Platform.OS;
+
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -75,7 +76,10 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         <ButtonComponent label="LOGIN" onPress={handleSignIn} />
       )}
 
-      <LoginWavesComponent />
+      {Platform.OS === 'ios' ? (
+        <LoginWavesComponent />
+      ) : null}
+
       <StatusBar style="auto" />
     </View>
   );

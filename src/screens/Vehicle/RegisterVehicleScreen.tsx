@@ -100,6 +100,20 @@ const RegisterVehicleScreen: React.FC = () => {
       }
     };
 
+    // const captureImage = async () => {
+    //   let result = await ImagePicker.launchCameraAsync({
+    //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+    //     allowsEditing: true,
+    //     aspect: [4, 3],
+    //     quality: 1,
+    //   });
+    
+    //   if (!result.canceled) {
+    //     setImage(result.assets[0].uri);
+    //     detectPlaceService(result.assets[0].uri);
+    //   }
+    // };
+
     if(cameraStatus === null)
     {
       cameraRequestPermission();
@@ -135,11 +149,12 @@ const RegisterVehicleScreen: React.FC = () => {
               {currentSegment === "Carregar imagem" && (
               <View>
                 {image && (
-                  <View style={styles.imageRenderContainer}>
-                    <Image source={{ uri: image }} style={styles.imageRender} />
-                    <TouchableOpacity style={styles.closeButton} onPress={handleCloseImage}>
-                        <Text style={styles.closeButtonText}>Fechar</Text>
-                    </TouchableOpacity>
+                    <View style={styles.imageRenderContainer}>
+                      <Image source={{ uri: image }} style={styles.imageRender} />
+                      <View style={styles.line} />
+                      <TouchableOpacity style={styles.closeButton} onPress={handleCloseImage}>
+                          <Text style={styles.closeButtonText}>Fechar</Text>
+                      </TouchableOpacity>
                   </View>
                 )}
 
@@ -314,17 +329,15 @@ const styles = StyleSheet.create({
       fontSize: 14,
       fontFamily: 'Roboto-Medium',
   },
-  // progressBar: {
-  //   width: '100%',
-  //   height: 10,
-  //   backgroundColor: '#ccc',
-  //   borderRadius: 5,
-  //   overflow: 'hidden',
-  // },
-  // progressBarFill: {
-  //   height: '100%',
-  //   backgroundColor: '#007bff',
-  // },
+  line: {
+      position: 'absolute',
+      top: '50%',
+      left: 0,
+      right: 0,
+      height: 2,
+      backgroundColor: "rgba(255, 255, 255, 0.6)",
+      opacity: 0.8,
+  },
 });
 
 export default RegisterVehicleScreen;
